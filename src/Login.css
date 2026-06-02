@@ -1,104 +1,174 @@
-.login-container {
-  display: flex;
-  height: 100vh;
-  background-color: #333333;
-  color: white;
-  font-family: sans-serif;
-}
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-.login-left {
-  flex: 1;
+.login-container {
+  min-height: 100vh;
   background-color: #000000;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-right: 2px solid #007bff;
-}
-
-.login-left h1 {
-  font-size: 3rem;
-  margin-bottom: 2rem;
-}
-
-.logo-placeholder {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-right {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  font-family: sans-serif;
+  color: white;
   position: relative;
 }
 
-.login-right h2 {
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+.titulo-principal {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 4rem;
+  z-index: 10;
 }
 
-form {
+.destaque-laranja {
+  color: #df8a43;
+}
+
+.login-card {
+  background-color: #4a4a4a;
+  width: 420px;
+  height: 480px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
-  width: 450px;
-}
-
-.input-group {
-  display: flex;
   align-items: center;
-  background-color: #cccccc;
-  border-radius: 25px;
-  margin-bottom: 1.5rem;
-  padding: 0.5rem 1rem;
+  position: relative;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
-.icon {
-  font-size: 1.5rem;
-  color: #000;
-  margin-right: 10px;
-  border-right: 2px solid #000;
-  padding-right: 10px;
-}
-
-input[type="text"],
-input[type="password"] {
-  border: none;
-  background: transparent;
-  outline: none;
-  width: 100%;
-  font-size: 1.2rem;
-  color: #000;
-}
-
-.options {
+.avatar-container {
+  position: absolute;
+  top: -45px;
+  width: 90px;
+  height: 90px;
+  background-color: white;
+  border-radius: 50%;
   display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 4px solid #000000;
+  z-index: 15;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mega-login-titulo {
+  font-family: "Press Start 2P", cursive;
+  color: #df8a43;
+  -webkit-text-stroke: 2px black;
+  font-size: 1.8rem;
+  margin-top: 35px;
+  margin-bottom: 40px;
+  text-align: center;
+  z-index: 10;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.input-field {
+  width: 80%;
+  padding: 18px 25px;
+  margin-bottom: 18px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1.2rem;
+  color: #888;
+  outline: none;
+}
+
+.esqueceu-texto {
+  font-size: 1.1rem;
   margin-bottom: 2rem;
 }
 
-.options a {
-  color: white;
-  text-decoration: none;
+.link-laranja {
+  color: #df8a43;
+  cursor: pointer;
 }
 
-.login-btn {
-  background-color: white;
-  color: black;
-  border: none;
-  border-radius: 25px;
-  padding: 1rem;
-  font-size: 1.5rem;
+.btn-entrar {
+  background-color: #df8a43;
+  color: white;
+  font-size: 1.8rem;
   font-weight: bold;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  z-index: 10;
+  margin-top: auto;
+}
+
+.mascote-img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 180px;
+  border-bottom-right-radius: 20px;
+  z-index: 5;
+}
+
+.modal-aviso {
+  position: absolute;
+  top: 150px;
+  width: 80%;
+  background-color: #df8a43;
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 20;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  background-color: #1a1a1a;
+  height: 35px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.btn-fechar {
+  width: 18px;
+  height: 18px;
+  background-color: red;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 25px;
+  color: white;
+  font-size: 1.3rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.login-footer {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  padding: 0 60px;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.icones-sociais {
+  display: flex;
+  gap: 15px;
+  color: white;
 }
