@@ -114,8 +114,8 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 180px;
-  border-bottom-right-radius: 20px;
+  width: 130px;
+  border-bottom-right-radius: 30px;
   z-index: 5;
 }
 
