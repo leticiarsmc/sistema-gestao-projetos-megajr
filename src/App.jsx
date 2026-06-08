@@ -1,7 +1,7 @@
-import Login from "./Login";
+import DashboardAdmin from "./DashboardAdmin";
 
 function App() {
-  return <Login />;
+  return <DashboardAdmin />;
 }
 
 export default App;
