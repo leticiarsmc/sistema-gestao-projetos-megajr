@@ -1,4 +1,12 @@
 {
+  "name": "backend-megajr",
+  "version": "1.0.0",
+  "description": "API do Sistema de Gestão de Projetos e Alocação de Membros da Mega Jr.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
   "dependencies": {
     "express": "^5.2.1"
   }
