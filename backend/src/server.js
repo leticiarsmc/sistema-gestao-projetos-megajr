@@ -1,4 +1,8 @@
+require('dotenv').config();
+
 const express = require('express');
+
+const memberRoutes = require('./routes/member.routes');
 
 const app = express();
 
@@ -8,13 +12,14 @@ app.get('/', (req, res) => {
   res.json({ message: 'rodando' });
 });
 
-//rota de saude
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    message: 'rodando',
+    message: 'API Mega Jr rodando',
   });
 });
+
+app.use('/members', memberRoutes);
 
 const PORT = 3000;
 
