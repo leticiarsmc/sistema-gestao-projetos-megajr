@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 
 const memberRoutes = require('./routes/member.routes');
+const dashboardRoutes = require('./routes/dashboard.routes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/members', memberRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 const PORT = 3000;
 
