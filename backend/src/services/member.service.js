@@ -83,17 +83,19 @@ async function createMember(data) {
 
 async function getAllMembers() {
   return prisma.member.findMany({
-    orderBy: {
-      createdAt: 'desc',
+    include: {
+      allocations: {
+        include: {
+          project: true,
+        },
+      },
     },
   });
 }
 
 async function getMemberById(id) {
   return prisma.member.findUnique({
-    where: {
-      id,
-    },
+    where: { id },
     include: {
       allocations: {
         include: {

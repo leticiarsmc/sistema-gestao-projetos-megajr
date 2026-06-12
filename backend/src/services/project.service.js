@@ -57,17 +57,12 @@ async function getAllProjects() {
         },
       },
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
   });
 }
 
 async function getProjectById(id) {
   return prisma.project.findUnique({
-    where: {
-      id,
-    },
+    where: { id },
     include: {
       allocations: {
         include: {
