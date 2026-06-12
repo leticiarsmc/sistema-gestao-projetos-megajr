@@ -50,12 +50,27 @@ async function getDashboardSummary() {
     };
   });
 
-  return {
-    totalMembers,
-    totalProjects,
-    totalActiveProjects,
-    membersWorkload,
-  };
+  const freeMembers = membersWorkload.filter((member) => {
+  return member.workloadStatus === 'FREE';
+}).length;
+
+const normalMembers = membersWorkload.filter((member) => {
+  return member.workloadStatus === 'NORMAL';
+}).length;
+
+const overloadedMembers = membersWorkload.filter((member) => {
+  return member.workloadStatus === 'OVERLOADED';
+}).length;
+
+return {
+  totalMembers,
+  totalProjects,
+  totalActiveProjects,
+  freeMembers,
+  normalMembers,
+  overloadedMembers,
+  membersWorkload,
+};
 }
 
 module.exports = {
