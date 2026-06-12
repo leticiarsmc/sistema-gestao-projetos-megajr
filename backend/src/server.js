@@ -5,6 +5,7 @@ const express = require('express');
 const memberRoutes = require('./routes/member.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const projectRoutes = require('./routes/project.routes');
+const allocationRoutes = require('./routes/allocation.routes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get('/health', (req, res) => {
 app.use('/members', memberRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/projects', projectRoutes);
+app.use('/allocations', allocationRoutes);
 
 const PORT = 3000;
 
