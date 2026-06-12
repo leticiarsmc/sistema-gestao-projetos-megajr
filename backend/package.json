@@ -1,0 +1,18 @@
+{
+  "name": "backend-megajr",
+  "version": "1.0.0",
+  "description": "API do Sistema de Gestão de Projetos e Alocação de Membros da Mega Jr.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.21.0",
+    "prisma": "^7.8.0"
+  }
+}
