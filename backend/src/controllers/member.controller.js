@@ -6,7 +6,7 @@ async function createMember(req, res) {
 
     return res.status(201).json(member);
   } catch (error) {
-    return res.status(400).json({
+    return res.status(error.statusCode || 400).json({
       message: 'Erro ao criar membro',
       error: error.message,
     });
@@ -54,7 +54,7 @@ async function updateMember(req, res) {
     const memberExists = await memberService.getMemberById(id);
 
     if (!memberExists) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: 'Membro não encontrado',
       });
     }
@@ -63,7 +63,7 @@ async function updateMember(req, res) {
 
     return res.json(member);
   } catch (error) {
-    return res.status(400).json({
+    return res.status(error.statusCode || 400).json({
       message: 'Erro ao atualizar membro',
       error: error.message,
     });
