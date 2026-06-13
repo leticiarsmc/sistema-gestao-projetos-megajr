@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./DashboardGerente.css";
 import avatar from "./assets/avatar.png";
+import DashboardTab from "./components/DashboardTab";
 
 const DashboardGerente = ({ onLogout }) => {
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
@@ -9,6 +10,10 @@ const DashboardGerente = ({ onLogout }) => {
     if (onLogout) {
       onLogout();
     }
+  };
+
+  const emBreve = () => {
+    alert("Funcionalidade disponível em versão futura.");
   };
 
   const membros = [
@@ -82,10 +87,10 @@ const DashboardGerente = ({ onLogout }) => {
           </button>
 
           <button
-            className={abaAtiva === "add" ? "active" : ""}
-            onClick={() => setAbaAtiva("add")}
+            className={abaAtiva === "carga" ? "active" : ""}
+            onClick={() => setAbaAtiva("carga")}
           >
-            Projeto +
+            Painel de carga
           </button>
         </nav>
 
@@ -114,7 +119,7 @@ const DashboardGerente = ({ onLogout }) => {
           <div className="perfil-gerente">
             <div className="texto-perfil">
               <span className="nome-gerente">Olá, Roberto</span>
-              <span className="cargo-gerente">Gerente</span>
+              <span className="cargo-gerente">Diretor</span>
             </div>
 
             <img src={avatar} alt="Roberto" className="avatar-gerente" />
@@ -154,7 +159,7 @@ const DashboardGerente = ({ onLogout }) => {
                     <div className="atividade-item">
                       <div className="dot orange"></div> Novo membro Pedro H
                       entrou na equipe <br />
-                      <span>por Gerente Roberto</span>
+                      <span>por Diretor Roberto</span>
                     </div>
 
                     <div className="atividade-item">
@@ -193,8 +198,7 @@ const DashboardGerente = ({ onLogout }) => {
 
               <div className="secao-projetos-ativos">
                 <div className="flex-h">
-                  <h3>Projeto ativos</h3>
-                  <button className="btn-projeto-small">Projeto +</button>
+                  <h3>Projetos ativos</h3>
                 </div>
 
                 <table className="tabela-gerente">
@@ -273,8 +277,6 @@ const DashboardGerente = ({ onLogout }) => {
                     </div>
 
                     <span>{m.projetos}</span>
-
-                    <button className="btn-alocar-small">Alocar +</button>
                   </div>
                 ))}
               </div>
@@ -325,8 +327,7 @@ const DashboardGerente = ({ onLogout }) => {
                     </p>
 
                     <div className="btns-card">
-                      <button>Ver detalhes</button>
-                      <button className="btn-alocar-fill">Alocar +</button>
+                      <button onClick={emBreve}>Ver detalhes</button>
                     </div>
                   </div>
                 ))}
@@ -334,107 +335,8 @@ const DashboardGerente = ({ onLogout }) => {
             </div>
           )}
 
-          {abaAtiva === "add" && (
-            <div className="view-add-projeto">
-              <div className="cabecalho-add-projeto">
-                <button className="btn-back-circle">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#df8a43"
-                    strokeWidth="3"
-                  >
-                    <path d="M19 12H5M12 19l-7-7 7-7" />
-                  </svg>
-                </button>
-
-                <h1 className="titulo-central-gerente">Detalhes do Projeto</h1>
-              </div>
-
-              <div className="form-gerente">
-                <div className="row">
-                  <input
-                    type="text"
-                    placeholder="Nome do projeto"
-                    className="input-f"
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="Back/front/fullstack"
-                    className="input-f"
-                  />
-                </div>
-
-                <div className="row">
-                  <input
-                    type="text"
-                    placeholder="Responsável pelo projeto"
-                    className="input-f"
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="Prazo (MM/DD/AAAA)"
-                    className="input-f"
-                  />
-                </div>
-
-                <textarea
-                  placeholder="Descrição do projeto"
-                  className="text-f"
-                ></textarea>
-
-                <div className="secao-funcoes">
-                  <div className="flex-h">
-                    <h3>Adicionar Funções</h3>
-                    <button className="btn-plus-orange">+</button>
-                  </div>
-
-                  <div className="row">
-                    <input
-                      type="text"
-                      placeholder="Nome da função"
-                      className="input-f"
-                    />
-
-                    <input type="text" placeholder="Tag" className="input-f" />
-                  </div>
-
-                  <textarea
-                    placeholder="Descrição da função"
-                    className="text-f"
-                    style={{ height: "80px" }}
-                  ></textarea>
-
-                  <button className="btn-add-lista">Adicionar</button>
-                </div>
-
-                <div className="lista-revisao">
-                  <div className="revisao-item">
-                    <div>
-                      <strong>Revisão do código</strong>
-                      <p>Aguardando revisão...</p>
-                    </div>
-
-                    <span className="rem-btn">Remover</span>
-                  </div>
-
-                  <div className="revisao-item">
-                    <div>
-                      <strong>Revisão do código</strong>
-                      <p>Aguardando revisão...</p>
-                    </div>
-
-                    <span className="rem-btn">Remover</span>
-                  </div>
-                </div>
-
-                <button className="btn-criar-projeto">Criar</button>
-              </div>
-            </div>
+          {abaAtiva === "carga" && (
+            <DashboardTab titulo="Painel de carga dos membros" />
           )}
         </section>
 

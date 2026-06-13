@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getDashboardSummary } from "../services/dashboardService";
 
-function DashboardTab() {
+function DashboardTab({ titulo = "Bem-vindo(a), Lucas!" }) {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,7 +40,7 @@ function DashboardTab() {
 
   return (
     <div className="view-admin-dash">
-      <h2>Bem-vindo(a), Lucas!</h2>
+      <h2>{titulo}</h2>
 
       <div className="dashboard-summary-grid">
         <div className="dashboard-card">
