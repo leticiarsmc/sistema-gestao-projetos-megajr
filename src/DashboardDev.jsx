@@ -11,47 +11,67 @@ const DashboardDev = ({ onLogout }) => {
 
   const projetosGerais = [
     {
-      projeto: "Painel Administrativo",
-      cliente: "Facebook",
+      projeto: "Sistema de Gestão de Projetos",
+      cliente: "Mega Jr",
       tipo: "Full Stack",
-      descricao: "Desenvolvimento de nova plataforma web institucional.",
-      inicio: "09/3/2025",
-      prazo: "12/7/2025",
+      descricao: "Sistema interno para cadastro de membros, projetos e alocações da Mega Jr.",
+      inicio: "01/01/2026",
+      prazo: "30/03/2026",
       status: "Em andamento",
-      membros: ["Fabio Akita", "Mariana S.", "Lucas R."],
+      membros: ["Letícia Cardoso", "Felipe Souza"],
+    },
+    {
+      projeto: "Portal Institucional",
+      cliente: "Mega Jr",
+      tipo: "Front-end",
+      descricao: "Portal institucional com área pública e painel administrativo para gestão de conteúdo.",
+      inicio: "10/02/2026",
+      prazo: "15/06/2026",
+      status: "Planejamento",
+      membros: ["Mariana S."],
     },
     {
       projeto: "App Interno",
-      cliente: "Facebook",
+      cliente: "Mega Jr",
       tipo: "Mobile",
-      descricao: "Aplicativo interno para gestão de equipes.",
+      descricao: "Aplicativo interno para acompanhamento de tarefas e alocações dos membros.",
       inicio: "23/9/2024",
       prazo: "07/2/2025",
       status: "Concluído",
-      membros: ["Fabio Akita", "Ana Clara"],
+      membros: ["Pedro H."],
+    },
+    {
+      projeto: "Dashboard de Indicadores",
+      cliente: "Mega Jr",
+      tipo: "Full Stack",
+      descricao: "Dashboard com indicadores de carga de trabalho e status dos projetos ativos.",
+      inicio: "05/03/2026",
+      prazo: "10/05/2026",
+      status: "Em andamento",
+      membros: ["Ana Clara"],
     },
     {
       projeto: "Plataforma Web",
-      cliente: "Facebook",
+      cliente: "Mega Jr",
       tipo: "Full Stack",
-      descricao: "Desenvolvimento de nova plataforma web institucional.",
+      descricao: "Plataforma web para clientes externos, atualmente com prazo em atraso.",
       inicio: "20/01/2026",
       prazo: "20/03/2026",
       status: "Atrasado",
-      membros: ["Lucas R.", "Beatriz L."],
+      membros: ["Felipe Souza"],
     },
   ];
 
   const [alocacoes, setAlocacoes] = useState([
     {
-      projeto: "Painel Administrativo",
-      cliente: "Facebook",
+      projeto: "Sistema de Gestão de Projetos",
+      cliente: "Mega Jr",
       tipo: "Full Stack",
-      funcao: "Back-end",
-      data: "09/3/2025",
-      prazo: "12/7/2025",
+      funcao: "Front-end",
+      data: "01/01/2026",
+      prazo: "30/03/2026",
       status: "Em andamento",
-      descricao: "Desenvolvimento de nova plataforma web institucional.",
+      descricao: "Sistema interno para cadastro de membros, projetos e alocações da Mega Jr.",
       checklist: [
         {
           item: "Funcionalidades implementadas",
@@ -77,13 +97,13 @@ const DashboardDev = ({ onLogout }) => {
     },
     {
       projeto: "App Interno",
-      cliente: "Facebook",
+      cliente: "Mega Jr",
       tipo: "Mobile",
-      funcao: "Mobile",
+      funcao: "QA",
       data: "23/9/2024",
       prazo: "07/2/2025",
       status: "Concluído",
-      descricao: "Aplicativo interno para gestão de equipes.",
+      descricao: "Aplicativo interno para acompanhamento de tarefas e alocações dos membros.",
       checklist: [
         {
           item: "Funcionalidades implementadas",
@@ -249,8 +269,8 @@ const DashboardDev = ({ onLogout }) => {
             <img src={avatar} alt="Avatar" className="avatar-header" />
 
             <div className="info-usuario">
-              <span className="nome-usuario">Fabio Akita</span>
-              <span className="cargo-usuario">Membro</span>
+              <span className="nome-usuario">Letícia Cardoso</span>
+              <span className="cargo-usuario">Front-end</span>
             </div>
           </div>
         </header>
@@ -381,6 +401,7 @@ const DashboardDev = ({ onLogout }) => {
                         <div className="bolinha-verde"></div>
 
                         <div className="textos-checklist">
+                          <img src={avatar} alt={membro} className="avatar-membro-projeto" />
                           <strong>{membro}</strong>
                         </div>
                       </div>
@@ -512,7 +533,7 @@ const DashboardDev = ({ onLogout }) => {
                   <h3>Minhas tarefas de entrega</h3>
 
                   <p className="subtitulo">
-                    Clique em uma tarefa para marcar como concluída ou pendente.
+                    Clique em uma tarefa para alternar entre pendente e concluída.
                   </p>
 
                   <div className="lista-checklist">
@@ -531,7 +552,6 @@ const DashboardDev = ({ onLogout }) => {
 
                         <div className="textos-checklist">
                           <strong>{tarefa.item}</strong>
-                          <p>{tarefa.desc}</p>
                         </div>
 
                         <span
