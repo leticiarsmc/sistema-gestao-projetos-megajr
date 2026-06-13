@@ -6,6 +6,8 @@ const memberRoutes = require('./routes/member.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const projectRoutes = require('./routes/project.routes');
 const allocationRoutes = require('./routes/allocation.routes');
+const authRoutes = require('./routes/auth.routes');
+
 const {
   swaggerUi,
   swaggerDocument,
@@ -49,6 +51,7 @@ app.use('/members', memberRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/projects', projectRoutes);
 app.use('/allocations', allocationRoutes);
+app.use('/auth', authRoutes);
 
 const PORT = process.env.PORT || 3000;
 
