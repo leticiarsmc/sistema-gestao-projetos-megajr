@@ -6,47 +6,30 @@ datasource db {
   provider = "postgresql"
 }
 
-enum UserRole {
-  DIRECTOR
-  ADMIN
-  MEMBER
-}
-
-enum ProjectStatus {
-  PLANNING
-  IN_PROGRESS
-  DONE
-  CANCELLED
-}
-
 model User {
-  id       String   @id @default(uuid())
-  name     String
-  email    String   @unique
-  password String
-  role     UserRole @default(MEMBER)
-
-  memberId String? @unique
-  member   Member? @relation(fields: [memberId], references: [id])
-
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(MEMBER)
+  memberId  String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  member    Member?  @relation(fields: [memberId], references: [id])
 
   @@map("users")
 }
 
 model Member {
-  id       String   @id @default(uuid())
-  name     String
-  email    String   @unique
-  position String
-  skills   String[]
-
-  user        User?
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  position    String
+  skills      String[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   allocations Allocation[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user        User?
 
   @@map("members")
 }
@@ -58,27 +41,36 @@ model Project {
   startDate   DateTime
   endDate     DateTime?
   status      ProjectStatus @default(PLANNING)
-
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   allocations Allocation[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@map("projects")
 }
 
 model Allocation {
-  id             String @id @default(uuid())
+  id             String   @id @default(uuid())
   memberId       String
   projectId      String
   responsibility String
-
-  member  Member  @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  member         Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@unique([memberId, projectId])
   @@map("allocations")
+}
+
+enum UserRole {
+  DIRECTOR
+  ADMIN
+  MEMBER
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  DONE
+  CANCELLED
 }
