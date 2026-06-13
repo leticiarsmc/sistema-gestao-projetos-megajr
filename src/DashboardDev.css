@@ -1,6 +1,7 @@
 .layout-principal {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #1a1a1a;
   color: white;
   font-family: sans-serif;
@@ -10,13 +11,12 @@
   width: 250px;
   min-width: 250px;
   height: 100vh;
+  flex-shrink: 0;
   background-color: #df8a43;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem 0;
-  position: sticky;
-  top: 0;
 }
 
 .logo-mega {
@@ -64,9 +64,11 @@
 
 .conteudo-principal {
   flex: 1;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  position: relative;
   overflow-y: auto;
 }
 
@@ -75,10 +77,6 @@
   align-items: center;
   padding: 20px 40px;
   justify-content: space-between;
-}
-
-.icone-menu {
-  cursor: pointer;
 }
 
 .busca-container {
@@ -129,8 +127,7 @@
 
 .area-telas {
   padding: 20px 40px;
-  flex: 1;
-  padding-bottom: 100px;
+  flex: 1 0 auto;
 }
 
 h2 {
@@ -481,24 +478,30 @@ textarea::placeholder {
 }
 
 .footer-dev {
-  position: absolute;
-  bottom: 0;
+  flex-shrink: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
+  padding: 32px 40px 28px;
+  margin-top: 24px;
   box-sizing: border-box;
   font-size: 0.9rem;
   color: white;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logo-footer {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
 .icones-sociais {
   display: flex;
   gap: 15px;
+}
+
+.icones-sociais svg {
+  color: white;
+  opacity: 0.9;
 }

@@ -65,6 +65,7 @@
 
 .gerente-main {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 20px 40px;
@@ -308,6 +309,12 @@
 }
 .status-concluido {
   color: #32cd32;
+}
+.status-andamento {
+  color: #df8a43;
+}
+.status-planejamento {
+  color: #94a3b8;
 }
 
 

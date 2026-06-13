@@ -25,6 +25,7 @@ const MembrosTab = () => {
   // Função para carregar os membros da API
   const carregarMembros = async () => {
     setLoading(true);
+    setError("");
     try {
       const data = await getMembers();
       setMembers(data);
@@ -134,56 +135,58 @@ const MembrosTab = () => {
             </button>
           </div>
           
-          <table className="tabela-admin">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Cargo</th>
-                <th>Config</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading && (
+          <div className="table-wrapper">
+            <table className="tabela-admin">
+              <thead>
                 <tr>
-                  <td colSpan="4">Carregando membros...</td>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Cargo</th>
+                  <th>Config</th>
                 </tr>
-              )}
+              </thead>
+              <tbody>
+                {loading && (
+                  <tr>
+                    <td colSpan="4">Carregando membros...</td>
+                  </tr>
+                )}
 
-              {error && (
-                <tr>
-                  <td colSpan="4" style={{ color: "red" }}>{error}</td>
-                </tr>
-              )}
+                {error && (
+                  <tr>
+                    <td colSpan="4" style={{ color: "red" }}>{error}</td>
+                  </tr>
+                )}
 
-              {!loading && !error && members.length === 0 && (
-                <tr>
-                  <td colSpan="4">Nenhum membro cadastrado.</td>
-                </tr>
-              )}
+                {!loading && !error && members.length === 0 && (
+                  <tr>
+                    <td colSpan="4">Nenhum membro cadastrado.</td>
+                  </tr>
+                )}
 
-              {!loading && !error && members.map((member) => (
-                <tr key={member.id}>
-                  <td className="td-membro">
-                    <span className="cel-pessoa">
-                      <img src={avatar} alt="User" /> {member.name}
-                    </span>
-                  </td>
-                  <td>{member.email}</td>
-                  <td>{member.position}</td>
-                  <td className="td-config">
-                    <button className="btn-link-edit" onClick={() => navegarParaEdicao(member)}>
-                      Editar
-                    </button>
-                    <span className="divisor">/</span>
-                    <button className="btn-link-del" onClick={() => abrirModalExcluir(member.id, member.name)}>
-                      Remover
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                {!loading && !error && members.map((member) => (
+                  <tr key={member.id}>
+                    <td className="td-membro">
+                      <span className="cel-pessoa">
+                        <img src={avatar} alt="User" /> {member.name}
+                      </span>
+                    </td>
+                    <td>{member.email}</td>
+                    <td>{member.position}</td>
+                    <td className="td-config">
+                      <button className="btn-link-edit" onClick={() => navegarParaEdicao(member)}>
+                        Editar
+                      </button>
+                      <span className="divisor">/</span>
+                      <button className="btn-link-del" onClick={() => abrirModalExcluir(member.id, member.name)}>
+                        Remover
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

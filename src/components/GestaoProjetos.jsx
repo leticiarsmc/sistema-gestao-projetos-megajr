@@ -3,6 +3,11 @@ import { getProjects, createProject, updateProject, deleteProject } from "../ser
 import { formatProjectStatus } from "../utils/projectStatus";
 import patoTriste from "../assets/patotriste.png";
 
+const formatarData = (dataIso) => {
+  if (!dataIso) return "";
+  return new Date(dataIso).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+};
+
 const GestaoProjetos = () => {
   const [subAba, setSubAba] = useState("lista");
   const [projects, setProjects] = useState([]);
@@ -144,7 +149,7 @@ const GestaoProjetos = () => {
                 <tr key={proj.id}>
                   <td>{proj.name}</td>
                   <td>{formatProjectStatus(proj.status)}</td>
-                  <td>{new Date(proj.startDate).toLocaleDateString('pt-BR')}</td>
+                  <td>{formatarData(proj.startDate)}</td>
                   <td className="td-config">
                     <button className="btn-link-edit" onClick={() => navegarParaEdicao(proj)}>Editar</button>
                     <span className="divisor">/</span>

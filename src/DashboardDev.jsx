@@ -1,6 +1,138 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./DashboardDev.css";
 import avatar from "./assets/avatar.png";
+import { getMembers } from "./services/memberService";
+import { getProjects } from "./services/projectService";
+import { formatProjectStatus } from "./utils/projectStatus";
+
+const formatarData = (dataIso) => {
+  if (!dataIso) return "Sem prazo definido";
+  return new Date(dataIso).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+};
+
+const seedProjectsFallback = [
+  {
+    id: "mega-junior",
+    name: "Mega Junior",
+    description:
+      "Sistema de gestao de projetos, membros, alocacoes e carga de trabalho da Mega Jr.",
+    startDate: "2026-06-01T00:00:00.000Z",
+    endDate: "2026-06-30T00:00:00.000Z",
+    status: "IN_PROGRESS",
+    allocations: [
+      { member: { name: "Samyr" }, responsibility: "Front-end" },
+      { member: { name: "Yan" }, responsibility: "Design" },
+      { member: { name: "Letícia" }, responsibility: "Back-end" },
+      { member: { name: "Elias" }, responsibility: "Back-end" },
+    ],
+  },
+  {
+    id: "portal-institucional",
+    name: "Portal Institucional",
+    description:
+      "Portal institucional para divulgacao de projetos e conteudos da Mega Jr.",
+    startDate: "2026-07-01T00:00:00.000Z",
+    endDate: "2026-09-30T00:00:00.000Z",
+    status: "PLANNING",
+    allocations: [{ member: { name: "Mariana S." }, responsibility: "UI/UX" }],
+  },
+  {
+    id: "dashboard-indicadores",
+    name: "Dashboard de Indicadores",
+    description:
+      "Dashboard de indicadores e metricas de desempenho dos projetos da Mega Jr.",
+    startDate: "2026-05-01T00:00:00.000Z",
+    endDate: "2026-08-31T00:00:00.000Z",
+    status: "IN_PROGRESS",
+    allocations: [{ member: { name: "Ana Clara" }, responsibility: "Full Stack" }],
+  },
+  {
+    id: "app-interno",
+    name: "App Interno",
+    description:
+      "Aplicativo interno para gestao de tarefas e comunicacao entre membros da Mega Jr.",
+    startDate: "2026-01-01T00:00:00.000Z",
+    endDate: "2026-05-30T00:00:00.000Z",
+    status: "DONE",
+    allocations: [{ member: { name: "Pedro H." }, responsibility: "QA" }],
+  },
+  {
+    id: "sistema-chamados",
+    name: "Sistema de Chamados",
+    description:
+      "Sistema de abertura e acompanhamento de chamados internos da Mega Jr.",
+    startDate: "2026-06-01T00:00:00.000Z",
+    endDate: "2026-08-31T00:00:00.000Z",
+    status: "IN_PROGRESS",
+    allocations: [
+      { member: { name: "João Victor" }, responsibility: "Product Owner" },
+    ],
+  },
+];
+
+const pedroFallback = {
+  id: "pedro-h",
+  name: "Pedro H.",
+  email: "pedroh@megajr.com",
+  position: "QA",
+  allocations: [
+    {
+      id: "pedro-app-interno",
+      responsibility: "QA",
+      project: seedProjectsFallback[3],
+    },
+  ],
+};
+
+const criarChecklistPadrao = () => [
+  {
+    item: "Funcionalidades implementadas",
+    desc: "Todas as funcionalidades foram implementadas e testadas.",
+    status: "Completo",
+  },
+  {
+    item: "Testes realizados",
+    desc: "Testes unitarios e de integracao concluidos.",
+    status: "Completo",
+  },
+  {
+    item: "Documentacao",
+    desc: "Documentacao do codigo e da API atualizada.",
+    status: "Completo",
+  },
+  {
+    item: "Revisao do codigo",
+    desc: "Aguardando a revisao e aprovacao do codigo",
+    status: "Pendente",
+  },
+];
+
+const normalizarProjeto = (project) => ({
+  id: project.id,
+  projeto: project.name,
+  cliente: "Mega Jr",
+  tipo: `${project.allocations?.length || 0} membro(s)`,
+  descricao: project.description,
+  inicio: formatarData(project.startDate),
+  prazo: formatarData(project.endDate),
+  status: formatProjectStatus(project.status),
+  membros:
+    project.allocations?.map((allocation) => allocation.member?.name).filter(Boolean) ||
+    [],
+});
+
+const normalizarAlocacao = (allocation) => ({
+  id: allocation.id,
+  projeto: allocation.project.name,
+  cliente: "Mega Jr",
+  tipo: `${allocation.project.allocations?.length || 0} membro(s)`,
+  funcao: allocation.responsibility,
+  data: formatarData(allocation.project.startDate),
+  prazo: formatarData(allocation.project.endDate),
+  status: formatProjectStatus(allocation.project.status),
+  descricao: allocation.project.description,
+  checklist: criarChecklistPadrao(),
+});
 
 const DashboardDev = ({ onLogout }) => {
   const [abaAtiva, setAbaAtiva] = useState("projetos");
@@ -8,116 +140,43 @@ const DashboardDev = ({ onLogout }) => {
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [alocacaoSelecionada, setAlocacaoSelecionada] = useState(0);
   const [novaTarefa, setNovaTarefa] = useState("");
+  const [projetosGerais, setProjetosGerais] = useState([]);
+  const [alocacoes, setAlocacoes] = useState([]);
+  const [usuarioMembro, setUsuarioMembro] = useState(pedroFallback);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
-  const projetosGerais = [
-    {
-      projeto: "Sistema de Gestão de Projetos",
-      cliente: "Mega Jr",
-      tipo: "Full Stack",
-      descricao: "Sistema interno para cadastro de membros, projetos e alocações da Mega Jr.",
-      inicio: "01/01/2026",
-      prazo: "30/03/2026",
-      status: "Em andamento",
-      membros: ["Letícia Cardoso", "Felipe Souza"],
-    },
-    {
-      projeto: "Portal Institucional",
-      cliente: "Mega Jr",
-      tipo: "Front-end",
-      descricao: "Portal institucional com área pública e painel administrativo para gestão de conteúdo.",
-      inicio: "10/02/2026",
-      prazo: "15/06/2026",
-      status: "Planejamento",
-      membros: ["Mariana S."],
-    },
-    {
-      projeto: "App Interno",
-      cliente: "Mega Jr",
-      tipo: "Mobile",
-      descricao: "Aplicativo interno para acompanhamento de tarefas e alocações dos membros.",
-      inicio: "23/9/2024",
-      prazo: "07/2/2025",
-      status: "Concluído",
-      membros: ["Pedro H."],
-    },
-    {
-      projeto: "Dashboard de Indicadores",
-      cliente: "Mega Jr",
-      tipo: "Full Stack",
-      descricao: "Dashboard com indicadores de carga de trabalho e status dos projetos ativos.",
-      inicio: "05/03/2026",
-      prazo: "10/05/2026",
-      status: "Em andamento",
-      membros: ["Ana Clara"],
-    },
-    {
-      projeto: "Plataforma Web",
-      cliente: "Mega Jr",
-      tipo: "Full Stack",
-      descricao: "Plataforma web para clientes externos, atualmente com prazo em atraso.",
-      inicio: "20/01/2026",
-      prazo: "20/03/2026",
-      status: "Atrasado",
-      membros: ["Felipe Souza"],
-    },
-  ];
+  useEffect(() => {
+    async function carregarDados() {
+      setCarregando(true);
+      setErro("");
 
-  const [alocacoes, setAlocacoes] = useState([
-    {
-      projeto: "Sistema de Gestão de Projetos",
-      cliente: "Mega Jr",
-      tipo: "Full Stack",
-      funcao: "Front-end",
-      data: "01/01/2026",
-      prazo: "30/03/2026",
-      status: "Em andamento",
-      descricao: "Sistema interno para cadastro de membros, projetos e alocações da Mega Jr.",
-      checklist: [
-        {
-          item: "Funcionalidades implementadas",
-          desc: "Todas as funcionalidades foram implementadas e testadas.",
-          status: "Completo",
-        },
-        {
-          item: "Testes realizados",
-          desc: "Testes unitários e de integração concluídos.",
-          status: "Completo",
-        },
-        {
-          item: "Documentação",
-          desc: "Documentação do código e da API atualizada.",
-          status: "Completo",
-        },
-        {
-          item: "Revisão do código",
-          desc: "Aguardando a revisão e aprovação do código",
-          status: "Pendente",
-        },
-      ],
-    },
-    {
-      projeto: "App Interno",
-      cliente: "Mega Jr",
-      tipo: "Mobile",
-      funcao: "QA",
-      data: "23/9/2024",
-      prazo: "07/2/2025",
-      status: "Concluído",
-      descricao: "Aplicativo interno para acompanhamento de tarefas e alocações dos membros.",
-      checklist: [
-        {
-          item: "Funcionalidades implementadas",
-          desc: "Todas as funcionalidades foram implementadas e testadas.",
-          status: "Completo",
-        },
-        {
-          item: "Testes realizados",
-          desc: "Testes unitários e de integração concluídos.",
-          status: "Completo",
-        },
-      ],
-    },
-  ]);
+      try {
+        const [projectsData, membersData] = await Promise.all([
+          getProjects(),
+          getMembers(),
+        ]);
+        const pedro =
+          membersData.find((member) => member.email === "pedroh@megajr.com") ||
+          membersData.find((member) =>
+            member.name?.toLowerCase().includes("pedro")
+          );
+
+        setProjetosGerais(projectsData.map(normalizarProjeto));
+        setUsuarioMembro(pedro || pedroFallback);
+        setAlocacoes((pedro?.allocations || []).map(normalizarAlocacao));
+      } catch (err) {
+        setErro(`${err.message}. Exibindo fallback coerente com a seed.`);
+        setProjetosGerais(seedProjectsFallback.map(normalizarProjeto));
+        setUsuarioMembro(pedroFallback);
+        setAlocacoes(pedroFallback.allocations.map(normalizarAlocacao));
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarDados();
+  }, []);
 
   const handleLogout = () => {
     if (onLogout) {
@@ -225,22 +284,6 @@ const DashboardDev = ({ onLogout }) => {
 
       <main className="conteudo-principal">
         <header className="cabecalho">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="icone-menu"
-          >
-            <line x1="4" x2="20" y1="12" y2="12" />
-            <line x1="4" x2="20" y1="6" y2="6" />
-            <line x1="4" x2="20" y1="18" y2="18" />
-          </svg>
-
           <div className="busca-container">
             <svg
               width="18"
@@ -269,8 +312,8 @@ const DashboardDev = ({ onLogout }) => {
             <img src={avatar} alt="Avatar" className="avatar-header" />
 
             <div className="info-usuario">
-              <span className="nome-usuario">Letícia Cardoso</span>
-              <span className="cargo-usuario">Front-end</span>
+              <span className="nome-usuario">{usuarioMembro.name}</span>
+              <span className="cargo-usuario">{usuarioMembro.position}</span>
             </div>
           </div>
         </header>
@@ -284,6 +327,8 @@ const DashboardDev = ({ onLogout }) => {
               <p className="subtitulo">
                 Todos os projetos cadastrados (somente leitura).
               </p>
+              {carregando && <p className="subtitulo">Carregando projetos...</p>}
+              {erro && <p className="dashboard-error">{erro}</p>}
 
               <div className="grid-projetos">
                 {projetosGerais.map((proj, i) => (
@@ -419,6 +464,11 @@ const DashboardDev = ({ onLogout }) => {
               <p className="subtitulo">
                 Projetos em que você está alocado atualmente.
               </p>
+              {carregando && <p className="subtitulo">Carregando alocacoes...</p>}
+              {erro && <p className="dashboard-error">{erro}</p>}
+              {!carregando && alocacoes.length === 0 && (
+                <p className="subtitulo">Nenhuma alocacao encontrada para este membro.</p>
+              )}
 
               <div className="grid-projetos">
                 {alocacoes.map((aloc, i) => (
@@ -624,7 +674,7 @@ const DashboardDev = ({ onLogout }) => {
 
           <div className="logo-footer">MEGA JR.</div>
 
-          <div className="icones-sociais">
+          <div className="icones-sociais" aria-label="Redes sociais">
             <svg
               width="18"
               height="18"
@@ -666,20 +716,6 @@ const DashboardDev = ({ onLogout }) => {
               strokeLinejoin="round"
             >
               <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-            </svg>
-
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect width="20" height="16" x="2" y="4" rx="2" />
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
             </svg>
           </div>
         </footer>
