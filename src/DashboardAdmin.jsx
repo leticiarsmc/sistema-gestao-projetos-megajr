@@ -1,11 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./DashboardAdmin.css";
 import avatar from "./assets/avatar.png";
 import patoTriste from "./assets/patotriste.png";
+import { getMembers } from "./services/memberService";
 
 const DashboardAdmin = () => {
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
   const [modal, setModal] = useState({ aberto: false, tipo: "", nome: "" });
+
+  const [members, setMembers] = useState([]);
+  const [membersLoading, setMembersLoading] = useState(true);
+  const [membersError, setMembersError] = useState("");
+
+  useEffect(() => {
+    async function loadMembers() {
+      try {
+        const data = await getMembers();
+        setMembers(data);
+      } catch (error) {
+        setMembersError(error.message);
+      } finally {
+        setMembersLoading(false);
+      }
+    }
+
+    loadMembers();
+  }, []);
 
   const abrirModal = (tipo, nome) => setModal({ aberto: true, tipo, nome });
   const fecharModal = () => setModal({ aberto: false, tipo: "", nome: "" });
@@ -188,33 +208,53 @@ const DashboardAdmin = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      { nome: "João Victor", cargo: "Front-End" },
-                      { nome: "Mariana S.", cargo: "Back-End" },
-                      { nome: "Lucas R.", cargo: "Designer" },
-                    ].map((m, i) => (
-                      <tr key={i}>
-                        <td className="td-membro">
-                          <img src={avatar} alt="User" /> {m.nome}
-                        </td>
-                        <td>{m.cargo}</td>
-                        <td>
-                          <button
-                            className="btn-link-edit"
-                            onClick={() => setAbaAtiva("editar")}
-                          >
-                            Editar
-                          </button>
-                          <span className="divisor">/</span>
-                          <button
-                            className="btn-link-del"
-                            onClick={() => abrirModal("membro", m.nome)}
-                          >
-                            Remover
-                          </button>
-                        </td>
+                    {membersLoading && (
+                      <tr>
+                        <td colSpan="3">Carregando membros...</td>
                       </tr>
-                    ))}
+                    )}
+
+                    {membersError && (
+                      <tr>
+                        <td colSpan="3">{membersError}</td>
+                      </tr>
+                    )}
+
+                    {!membersLoading &&
+                      !membersError &&
+                      members.length === 0 && (
+                        <tr>
+                          <td colSpan="3">Nenhum membro cadastrado.</td>
+                        </tr>
+                      )}
+
+                    {!membersLoading &&
+                      !membersError &&
+                      members.map((member) => (
+                        <tr key={member.id}>
+                          <td className="td-membro">
+                            <img src={avatar} alt="User" /> {member.name}
+                          </td>
+                          <td>{member.position}</td>
+                          <td>
+                            <button
+                              className="btn-link-edit"
+                              onClick={() => setAbaAtiva("editar")}
+                            >
+                              Editar
+                            </button>
+                            <span className="divisor">/</span>
+                            <button
+                              className="btn-link-del"
+                              onClick={() =>
+                                abrirModal("membro", member.name)
+                              }
+                            >
+                              Remover
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
