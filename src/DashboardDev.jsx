@@ -135,6 +135,9 @@ const normalizarAlocacao = (allocation) => ({
 });
 
 const DashboardDev = ({ onLogout }) => {
+  const usuarioLogado = JSON.parse(localStorage.getItem("user") || "{}");
+  const membroLogado = usuarioLogado.member || null;
+
   const [abaAtiva, setAbaAtiva] = useState("projetos");
   const [telaAtual, setTelaAtual] = useState("lista");
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
@@ -142,7 +145,7 @@ const DashboardDev = ({ onLogout }) => {
   const [novaTarefa, setNovaTarefa] = useState("");
   const [projetosGerais, setProjetosGerais] = useState([]);
   const [alocacoes, setAlocacoes] = useState([]);
-  const [usuarioMembro, setUsuarioMembro] = useState(pedroFallback);
+  const [usuarioMembro, setUsuarioMembro] = useState(membroLogado || pedroFallback);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
 
@@ -156,20 +159,26 @@ const DashboardDev = ({ onLogout }) => {
           getProjects(),
           getMembers(),
         ]);
-        const pedro =
-          membersData.find((member) => member.email === "pedroh@megajr.com") ||
-          membersData.find((member) =>
-            member.name?.toLowerCase().includes("pedro")
-          );
+        const membroAtual =
+          membersData.find((member) => member.email === membroLogado?.email) ||
+          membersData.find((member) => member.id === membroLogado?.id);
 
         setProjetosGerais(projectsData.map(normalizarProjeto));
-        setUsuarioMembro(pedro || pedroFallback);
-        setAlocacoes((pedro?.allocations || []).map(normalizarAlocacao));
+        setUsuarioMembro(membroAtual || membroLogado || pedroFallback);
+        setAlocacoes(
+          (membroAtual?.allocations || membroLogado?.allocations || []).map(
+            normalizarAlocacao
+          )
+        );
       } catch (err) {
         setErro(`${err.message}. Exibindo fallback coerente com a seed.`);
         setProjetosGerais(seedProjectsFallback.map(normalizarProjeto));
-        setUsuarioMembro(pedroFallback);
-        setAlocacoes(pedroFallback.allocations.map(normalizarAlocacao));
+        setUsuarioMembro(membroLogado || pedroFallback);
+        setAlocacoes(
+          (membroLogado?.allocations || pedroFallback.allocations || []).map(
+            normalizarAlocacao
+          )
+        );
       } finally {
         setCarregando(false);
       }

@@ -5,6 +5,7 @@ import DashboardTab from "./components/DashboardTab";
 import { getProjects } from "./services/projectService";
 import { getMembers } from "./services/memberService";
 import { formatProjectStatus } from "./utils/projectStatus";
+import { getRoleLabel } from "./utils/permissions";
 
 const formatarData = (dataIso) => {
   if (!dataIso) return "Sem prazo definido";
@@ -12,6 +13,7 @@ const formatarData = (dataIso) => {
 };
 
 const DashboardGerente = ({ onLogout }) => {
+  const usuarioLogado = JSON.parse(localStorage.getItem("user") || "{}");
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
   const [projetoDetalhe, setProjetoDetalhe] = useState(null);
   const [projetos, setProjetos] = useState([]);
@@ -157,8 +159,8 @@ const DashboardGerente = ({ onLogout }) => {
         <header className="gerente-header">
           <div className="perfil-gerente">
             <div className="texto-perfil">
-              <span className="nome-gerente">Olá, Roberto</span>
-              <span className="cargo-gerente">Diretor</span>
+              <span className="nome-gerente">Olá, {usuarioLogado.name}</span>
+              <span className="cargo-gerente">{getRoleLabel(usuarioLogado.role)}</span>
             </div>
 
             <img src={avatar} alt="Roberto" className="avatar-gerente" />

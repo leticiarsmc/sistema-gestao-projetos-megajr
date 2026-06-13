@@ -16,3 +16,18 @@ export function isDirector(user) {
 export function isManager(user) {
   return user?.role === ROLES.MANAGER;
 }
+
+export function getRoleLabel(role) {
+  switch (role) {
+    case ROLES.ADMIN:
+      return "Administrador";
+    case ROLES.DIRECTOR:
+      return "Diretor";
+    case ROLES.MANAGER:
+      return "Gerente";
+    case ROLES.MEMBER:
+      return "Membro";
+    default:
+      return "";
+  }
+}

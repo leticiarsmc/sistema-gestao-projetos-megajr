@@ -5,9 +5,11 @@ import MembrosTab from "./components/MembrosTab";
 import ProjetosTab from "./components/ProjetosTab";
 import GestaoProjetos from "./components/GestaoProjetos";
 import DashboardTab from "./components/DashboardTab";
+import { getRoleLabel } from "./utils/permissions";
 
 const DashboardAdmin = () => {
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
+  const usuarioLogado = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleLogout = () => {
     localStorage.clear();
@@ -61,8 +63,8 @@ const DashboardAdmin = () => {
         <header className="admin-header">
           <div className="perfil-admin">
             <div className="texto-perfil">
-              <span className="nome-admin">Olá, Lucas</span>
-              <span className="cargo-admin">Administrador</span>
+              <span className="nome-admin">Olá, {usuarioLogado.name}</span>
+              <span className="cargo-admin">{getRoleLabel(usuarioLogado.role)}</span>
             </div>
 
             <img src={avatar} alt="Admin" className="avatar-admin" />
