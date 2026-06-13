@@ -6,6 +6,10 @@ const memberRoutes = require('./routes/member.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const projectRoutes = require('./routes/project.routes');
 const allocationRoutes = require('./routes/allocation.routes');
+const {
+  swaggerUi,
+  swaggerDocument,
+} = require('./swagger');
 
 const app = express();
 app.use((req, res, next) => {
@@ -39,13 +43,19 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.use('/members', memberRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/projects', projectRoutes);
 app.use('/allocations', allocationRoutes);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`servidor rodando na porta ${PORT}`);
+});
+
+server.on('error', (error) => {
+  console.error('Erro ao iniciar servidor:', error);
 });
