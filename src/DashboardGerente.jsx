@@ -2,8 +2,14 @@ import { useState } from "react";
 import "./DashboardGerente.css";
 import avatar from "./assets/avatar.png";
 
-const DashboardGerente = () => {
+const DashboardGerente = ({ onLogout }) => {
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+  };
 
   const membros = [
     { nome: "João Victor", projetos: "3 Projetos" },
@@ -52,6 +58,7 @@ const DashboardGerente = () => {
         <div className="logo-container">
           <div className="logo-mega-gerente">MEGA JR.</div>
         </div>
+
         <nav className="gerente-nav">
           <button
             className={abaAtiva === "dashboard" ? "active" : ""}
@@ -59,18 +66,21 @@ const DashboardGerente = () => {
           >
             Dashboard
           </button>
+
           <button
             className={abaAtiva === "membros" ? "active" : ""}
             onClick={() => setAbaAtiva("membros")}
           >
             Membros
           </button>
+
           <button
             className={abaAtiva === "lista" ? "active" : ""}
             onClick={() => setAbaAtiva("lista")}
           >
             Lista de Projetos
           </button>
+
           <button
             className={abaAtiva === "add" ? "active" : ""}
             onClick={() => setAbaAtiva("add")}
@@ -78,7 +88,10 @@ const DashboardGerente = () => {
             Projeto +
           </button>
         </nav>
-        <button className="btn-sair-gerente">Sair</button>
+
+        <button className="btn-sair-gerente" onClick={handleLogout}>
+          Sair
+        </button>
       </aside>
 
       <main className="gerente-main">
@@ -97,11 +110,13 @@ const DashboardGerente = () => {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </div>
+
           <div className="perfil-gerente">
             <div className="texto-perfil">
               <span className="nome-gerente">Olá, Roberto</span>
               <span className="cargo-gerente">Gerente</span>
             </div>
+
             <img src={avatar} alt="Roberto" className="avatar-gerente" />
           </div>
         </header>
@@ -110,13 +125,16 @@ const DashboardGerente = () => {
           {abaAtiva === "dashboard" && (
             <div className="view-dashboard">
               <h2>Bem-vindo(a), Roberto!</h2>
+
               <div className="cards-resumo-gerente">
                 <div className="card-mini">
                   <span className="numero">27</span> Membros ativos
                 </div>
+
                 <div className="card-mini">
                   <span className="numero">12</span> Projetos ativos
                 </div>
+
                 <div className="card-mini">
                   <span className="numero">2</span> Atrasados
                 </div>
@@ -125,17 +143,20 @@ const DashboardGerente = () => {
               <div className="grid-dashboard-gerente">
                 <div className="secao-atividades">
                   <h3>Atividades recentes</h3>
+
                   <div className="lista-atividades">
                     <div className="atividade-item">
                       <div className="dot green"></div> Projeto Plataforma Web
                       está com atrasado <br />
                       <span>por Lucas R.</span>
                     </div>
+
                     <div className="atividade-item">
                       <div className="dot orange"></div> Novo membro Pedro H
                       entrou na equipe <br />
                       <span>por Gerente Roberto</span>
                     </div>
+
                     <div className="atividade-item">
                       <div className="dot orange"></div> Projeto App Mobile foi
                       concluído <br />
@@ -146,17 +167,21 @@ const DashboardGerente = () => {
 
                 <div className="secao-grafico">
                   <h3>Total de trabalhos: 12</h3>
+
                   <div className="legenda-grafico">
                     <div>
                       <div className="dot green"></div> Concluidos 4 (33%)
                     </div>
+
                     <div>
                       <div className="dot orange"></div> Em andamento 6 (50%)
                     </div>
+
                     <div>
                       <div className="dot red"></div> Atrasados 2 (17%)
                     </div>
                   </div>
+
                   <div className="barras-container">
                     <div className="barra-item" style={{ height: "60%" }}></div>
                     <div className="barra-item" style={{ height: "80%" }}></div>
@@ -168,9 +193,10 @@ const DashboardGerente = () => {
 
               <div className="secao-projetos-ativos">
                 <div className="flex-h">
-                  <h3>Projeto ativos</h3>{" "}
+                  <h3>Projeto ativos</h3>
                   <button className="btn-projeto-small">Projeto +</button>
                 </div>
+
                 <table className="tabela-gerente">
                   <thead>
                     <tr>
@@ -181,6 +207,7 @@ const DashboardGerente = () => {
                       <th>Progresso</th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {projetosAtivos.map((p, i) => (
                       <tr key={i}>
@@ -215,6 +242,7 @@ const DashboardGerente = () => {
                   placeholder="Buscar membros"
                   className="input-membros"
                 />
+
                 <button className="btn-back-circle">
                   <svg
                     width="20"
@@ -228,19 +256,24 @@ const DashboardGerente = () => {
                   </svg>
                 </button>
               </div>
+
               <h1 className="titulo-central-gerente">Mega membros</h1>
+
               <div className="lista-membros-container">
                 <div className="membros-header">
                   <span>Nome</span>
                   <span>Projetos alocados</span>
                 </div>
+
                 {membros.map((m, i) => (
                   <div className="membro-row" key={i}>
                     <div className="membro-info">
                       <img src={avatar} alt="User" />
                       <span>{m.nome}</span>
                     </div>
+
                     <span>{m.projetos}</span>
+
                     <button className="btn-alocar-small">Alocar +</button>
                   </div>
                 ))}
@@ -256,6 +289,7 @@ const DashboardGerente = () => {
                   placeholder="Buscar Projeto"
                   className="input-membros"
                 />
+
                 <button className="btn-back-circle">
                   <svg
                     width="20"
@@ -269,20 +303,27 @@ const DashboardGerente = () => {
                   </svg>
                 </button>
               </div>
+
               <h1 className="titulo-central-gerente">Selecione Um Projeto</h1>
+
               <div className="grid-projetos-gerente">
                 {[1, 2, 3, 4, 5, 6].map((p) => (
                   <div className="card-projeto-gerente" key={p}>
                     <div className="status-dot-red"></div>
+
                     <h3>Plataforma Web</h3>
+
                     <div className="tags-gerente">
-                      <span className="t-orange">Facebook</span>{" "}
+                      <span className="t-orange">Facebook</span>
                       <span className="t-gray">Full Stack</span>
                     </div>
+
                     <p>Prazo: 12/06/2023</p>
+
                     <p className="desc-p">
                       Desenvolvimento de nova plataforma web institucional.
                     </p>
+
                     <div className="btns-card">
                       <button>Ver detalhes</button>
                       <button className="btn-alocar-fill">Alocar +</button>
@@ -308,6 +349,7 @@ const DashboardGerente = () => {
                     <path d="M19 12H5M12 19l-7-7 7-7" />
                   </svg>
                 </button>
+
                 <h1 className="titulo-central-gerente">Detalhes do Projeto</h1>
               </div>
 
@@ -318,24 +360,28 @@ const DashboardGerente = () => {
                     placeholder="Nome do projeto"
                     className="input-f"
                   />
+
                   <input
                     type="text"
                     placeholder="Back/front/fullstack"
                     className="input-f"
                   />
                 </div>
+
                 <div className="row">
                   <input
                     type="text"
                     placeholder="Responsável pelo projeto"
                     className="input-f"
                   />
+
                   <input
                     type="text"
                     placeholder="Prazo (MM/DD/AAAA)"
                     className="input-f"
                   />
                 </div>
+
                 <textarea
                   placeholder="Descrição do projeto"
                   className="text-f"
@@ -346,19 +392,23 @@ const DashboardGerente = () => {
                     <h3>Adicionar Funções</h3>
                     <button className="btn-plus-orange">+</button>
                   </div>
+
                   <div className="row">
                     <input
                       type="text"
                       placeholder="Nome da função"
                       className="input-f"
                     />
+
                     <input type="text" placeholder="Tag" className="input-f" />
                   </div>
+
                   <textarea
                     placeholder="Descrição da função"
                     className="text-f"
                     style={{ height: "80px" }}
                   ></textarea>
+
                   <button className="btn-add-lista">Adicionar</button>
                 </div>
 
@@ -368,13 +418,16 @@ const DashboardGerente = () => {
                       <strong>Revisão do código</strong>
                       <p>Aguardando revisão...</p>
                     </div>
+
                     <span className="rem-btn">Remover</span>
                   </div>
+
                   <div className="revisao-item">
                     <div>
                       <strong>Revisão do código</strong>
                       <p>Aguardando revisão...</p>
                     </div>
+
                     <span className="rem-btn">Remover</span>
                   </div>
                 </div>
@@ -387,7 +440,9 @@ const DashboardGerente = () => {
 
         <footer className="footer-gerente">
           <p>Vamos trabalhar juntos.</p>
+
           <div className="logo-footer">MEGA JR.</div>
+
           <div className="social-icons-gerente">
             <svg
               width="18"
@@ -401,6 +456,7 @@ const DashboardGerente = () => {
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
               <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
             </svg>
+
             <svg
               width="18"
               height="18"
@@ -413,6 +469,7 @@ const DashboardGerente = () => {
               <rect width="4" height="12" x="2" y="9" />
               <circle cx="4" cy="4" r="2" />
             </svg>
+
             <svg
               width="18"
               height="18"

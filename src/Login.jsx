@@ -3,8 +3,48 @@ import "./Login.css";
 import avatar from "./assets/avatar.png";
 import mascote from "./assets/mascote.png";
 
-const Login = () => {
+const usuarios = [
+  {
+    id: "admin",
+    senha: "admin",
+    role: "admin",
+  },
+  {
+    id: "gerente",
+    senha: "gerente",
+    role: "gerente",
+  },
+  {
+    id: "dev",
+    senha: "dev",
+    role: "dev",
+  },
+];
+
+const Login = ({ onLogin }) => {
   const [esqueceuLogin, setEsqueceuLogin] = useState(false);
+  const [id, setId] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const usuarioEncontrado = usuarios.find((usuario) => {
+      return usuario.id === id.trim() && usuario.senha === senha.trim();
+    });
+
+    if (!usuarioEncontrado) {
+      setErro("ID ou senha inválidos.");
+      return;
+    }
+
+    setErro("");
+
+    if (onLogin) {
+      onLogin(usuarioEncontrado.role);
+    }
+  };
 
   return (
     <div className="login-container">
@@ -23,22 +63,35 @@ const Login = () => {
           <div className="modal-aviso">
             <div className="modal-header">
               <button
+                type="button"
                 className="btn-fechar"
                 onClick={() => setEsqueceuLogin(false)}
               ></button>
             </div>
+
             <div className="modal-body">
               Entre em contato com os superiores que têm acesso ao sistema!
             </div>
           </div>
         ) : (
-          <form className="login-form">
-            <input type="text" placeholder="ID" className="input-field" />
+          <form className="login-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="ID"
+              className="input-field"
+              value={id}
+              onChange={(event) => setId(event.target.value)}
+            />
+
             <input
               type="password"
               placeholder="Senha"
               className="input-field"
+              value={senha}
+              onChange={(event) => setSenha(event.target.value)}
             />
+
+            {erro && <p className="login-erro">{erro}</p>}
 
             <p className="esqueceu-texto">
               Esqueceu o{" "}
@@ -50,16 +103,19 @@ const Login = () => {
               </span>
               ?
             </p>
+
+            <button type="submit" className="btn-entrar">
+              Entrar
+            </button>
           </form>
         )}
-
-        <button className="btn-entrar">Entrar</button>
 
         <img src={mascote} alt="Mascote" className="mascote-img" />
       </div>
 
       <footer className="login-footer">
         <p>Vamos trabalhar juntos.</p>
+
         <div className="icones-sociais">
           <svg
             width="20"
@@ -75,6 +131,7 @@ const Login = () => {
             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
             <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
           </svg>
+
           <svg
             width="20"
             height="20"
@@ -89,6 +146,7 @@ const Login = () => {
             <rect width="4" height="12" x="2" y="9" />
             <circle cx="4" cy="4" r="2" />
           </svg>
+
           <svg
             width="20"
             height="20"
@@ -101,6 +159,7 @@ const Login = () => {
           >
             <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
           </svg>
+
           <svg
             width="20"
             height="20"

@@ -172,3 +172,10 @@
   gap: 15px;
   color: white;
 }
+.login-erro {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+}
