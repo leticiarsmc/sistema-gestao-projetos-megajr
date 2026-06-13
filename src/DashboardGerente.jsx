@@ -179,14 +179,14 @@ const DashboardGerente = ({ onLogout }) => {
 
               <div className="grid-dashboard-gerente">
                 <div className="secao-atividades">
-                  <h3>Atividades recentes</h3>
+                  <h3>Resumo operacional</h3>
 
                   <div className="lista-atividades">
                     <div className="atividade-item">
                       <div className="dot red"></div>
                       <div className="atividade-texto-container">
                         <span className="atividade-texto">
-                          Projeto Plataforma Web marcado como atrasado.
+                          Projeto Plataforma Web sinalizado como atrasado.
                         </span>
                         <span className="atividade-subtexto">
                           Revisar prazo e responsável.
@@ -198,10 +198,10 @@ const DashboardGerente = ({ onLogout }) => {
                       <div className="dot green"></div>
                       <div className="atividade-texto-container">
                         <span className="atividade-texto">
-                          Pedro H. foi adicionado à equipe.
+                          Novo membro cadastrado na equipe.
                         </span>
                         <span className="atividade-subtexto">
-                          Novo membro disponível para alocação.
+                          Disponível para alocação em projetos.
                         </span>
                       </div>
                     </div>
@@ -210,10 +210,22 @@ const DashboardGerente = ({ onLogout }) => {
                       <div className="dot orange"></div>
                       <div className="atividade-texto-container">
                         <span className="atividade-texto">
-                          Projeto App Mobile foi concluído.
+                          Projeto App Mobile teve status atualizado para concluído.
                         </span>
                         <span className="atividade-subtexto">
-                          Entrega registrada por Mariana S.
+                          Atualização registrada no sistema.
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="atividade-item">
+                      <div className="dot blue"></div>
+                      <div className="atividade-texto-container">
+                        <span className="atividade-texto">
+                          Alocação revisada no projeto App Mobile.
+                        </span>
+                        <span className="atividade-subtexto">
+                          Responsabilidades ajustadas na equipe.
                         </span>
                       </div>
                     </div>

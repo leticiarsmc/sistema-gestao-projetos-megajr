@@ -205,6 +205,9 @@
 .red {
   background-color: red;
 }
+.blue {
+  background-color: #4a90d9;
+}
 
 .legenda-grafico {
   display: flex;
@@ -719,6 +722,24 @@
   border-bottom: 1px solid #333;
   text-align: center;
   font-size: 0.95rem;
+}
+
+.td-membro {
+  white-space: nowrap;
+}
+
+.cel-pessoa {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cel-pessoa img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #df8a43;
+  flex-shrink: 0;
 }
 
 .status-workload {
