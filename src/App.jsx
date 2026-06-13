@@ -3,19 +3,25 @@ import Login from "./Login";
 import DashboardAdmin from "./DashboardAdmin";
 import DashboardGerente from "./DashboardGerente";
 import DashboardDev from "./DashboardDev";
+import { ROLES } from "./utils/permissions";
 
 function App() {
   const [userRole, setUserRole] = useState(() => {
-    return localStorage.getItem("userRole") || "";
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      return "";
+    }
+
+    return JSON.parse(user).role;
   });
 
   const handleLogin = (role) => {
-    localStorage.setItem("userRole", role);
     setUserRole(role);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userRole");
+    localStorage.removeItem("user");
     sessionStorage.clear();
     setUserRole("");
   };
@@ -24,15 +30,18 @@ function App() {
     return <Login onLogin={handleLogin} />;
   }
 
-  if (userRole === "admin") {
+  if (userRole === ROLES.ADMIN) {
     return <DashboardAdmin onLogout={handleLogout} />;
   }
 
-  if (userRole === "gerente") {
+  if (
+    userRole === ROLES.DIRECTOR ||
+    userRole === ROLES.MANAGER
+  ) {
     return <DashboardGerente onLogout={handleLogout} />;
   }
 
-  if (userRole === "dev") {
+  if (userRole === ROLES.MEMBER) {
     return <DashboardDev onLogout={handleLogout} />;
   }
 

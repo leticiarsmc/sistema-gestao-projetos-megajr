@@ -2,57 +2,35 @@ import { useState } from "react";
 import "./Login.css";
 import avatar from "./assets/avatar.png";
 import mascote from "./assets/mascote.png";
-
-const usuarios = [
-  {
-    id: "admin",
-    senha: "admin",
-    role: "admin",
-  },
-  {
-    id: "gerente",
-    senha: "gerente",
-    role: "gerente",
-  },
-  {
-    id: "dev",
-    senha: "dev",
-    role: "dev",
-  },
-  {
-    id: "diretor",
-    senha: "diretor",
-    role: "gerente",
-  },
-  {
-    id: "membro",
-    senha: "membro",
-    role: "dev",
-  },
-];
+import { login } from "./services/authService";
 
 const Login = ({ onLogin }) => {
   const [esqueceuLogin, setEsqueceuLogin] = useState(false);
-  const [id, setId] = useState("");
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const usuarioEncontrado = usuarios.find((usuario) => {
-      return usuario.id === id.trim() && usuario.senha === senha.trim();
-    });
+    try {
+      const response = await login(email, senha);
 
-    if (!usuarioEncontrado) {
-      setErro("ID ou senha inválidos.");
-      return;
-    }
+      console.log("LOGIN:", response);
 
-    setErro("");
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response)
+      );
 
-    if (onLogin) {
-      onLogin(usuarioEncontrado.role);
+      if (onLogin) {
+        onLogin(response.role);
+      }
+          } catch (error) {
+      setErro(
+        error.response?.data?.message ||
+        "Erro ao realizar login."
+      );
     }
   };
 
@@ -86,11 +64,11 @@ const Login = ({ onLogin }) => {
         ) : (
           <form className="login-form" onSubmit={handleSubmit}>
             <input
-              type="text"
-              placeholder="ID"
+              type="email"
+              placeholder="E-mail"
               className="input-field"
-              value={id}
-              onChange={(event) => setId(event.target.value)}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
             />
 
             <input
