@@ -19,6 +19,16 @@ const usuarios = [
     senha: "dev",
     role: "dev",
   },
+  {
+    id: "diretor",
+    senha: "diretor",
+    role: "gerente",
+  },
+  {
+    id: "membro",
+    senha: "membro",
+    role: "dev",
+  },
 ];
 
 const Login = ({ onLogin }) => {
