@@ -1,34 +1,51 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import "./DashboardAdmin.css";
 import avatar from "./assets/avatar.png";
 import patoTriste from "./assets/patotriste.png";
-import { getMembers } from "./services/memberService";
+import MembrosTab from "./components/MembrosTab";
+import { getAllAllocations, deleteAllocation } from "./services/allocationService";
+import ProjetosTab from "./components/ProjetosTab";
+import GestaoProjetos from "./components/GestaoProjetos";
 
 const DashboardAdmin = () => {
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
-  const [modal, setModal] = useState({ aberto: false, tipo: "", nome: "" });
+  const [modal, setModal] = useState({ aberto: false, tipo: "", nome: "", id: null });
 
-  const [members, setMembers] = useState([]);
-  const [membersLoading, setMembersLoading] = useState(true);
-  const [membersError, setMembersError] = useState("");
+  const abrirModal = (tipo, nome, id) => setModal({ aberto: true, tipo, nome, id });
+  const fecharModal = () => setModal({ aberto: false, tipo: "", nome: "", id: null });
+
+  const handleConfirmarRemocao = async () => {
+    if (modal.tipo === "alocação" && modal.id) {
+      try {
+        await deleteAllocation(modal.id);
+        // Remove da tela sem precisar recarregar a página inteira
+        setAllocations((prev) => prev.filter((aloc) => aloc.id !== modal.id));
+        fecharModal();
+      } catch (error) {
+        alert("Erro ao remover: " + error.message);
+      }
+    }
+  };
+
+  const [allocations, setAllocations] = useState([]);
+  const [allocationsLoading, setAllocationsLoading] = useState(true);
+  const [allocationsError, setAllocationsError] = useState("");
 
   useEffect(() => {
-    async function loadMembers() {
+    async function loadAllocations() {
       try {
-        const data = await getMembers();
-        setMembers(data);
+        setAllocationsLoading(true);
+        const data = await getAllAllocations();
+        setAllocations(data);
       } catch (error) {
-        setMembersError(error.message);
+        setAllocationsError(error.message);
       } finally {
-        setMembersLoading(false);
+        setAllocationsLoading(false);
       }
     }
 
-    loadMembers();
+    loadAllocations();
   }, []);
-
-  const abrirModal = (tipo, nome) => setModal({ aberto: true, tipo, nome });
-  const fecharModal = () => setModal({ aberto: false, tipo: "", nome: "" });
 
   return (
     <div className="admin-container">
@@ -52,7 +69,7 @@ const DashboardAdmin = () => {
               <button className="btn-cancelar" onClick={fecharModal}>
                 Cancelar
               </button>
-              <button className="btn-confirmar" onClick={fecharModal}>
+              <button className="btn-confirmar" onClick={handleConfirmarRemocao}>
                 Confirmar
               </button>
             </div>
@@ -63,33 +80,21 @@ const DashboardAdmin = () => {
       {/* SIDEBAR */}
       <aside className="admin-sidebar">
         <div className="logo-mega-admin">MEGA JR.</div>
-        <nav className="admin-nav">
-          <button
-            className={abaAtiva === "dashboard" ? "active" : ""}
-            onClick={() => setAbaAtiva("dashboard")}
-          >
-            Dashboard
-          </button>
-          <button
-            className={abaAtiva === "membros" ? "active" : ""}
-            onClick={() => setAbaAtiva("membros")}
-          >
-            Membros
-          </button>
-          <button
-            className={abaAtiva === "lista" ? "active" : ""}
-            onClick={() => setAbaAtiva("lista")}
-          >
-            Lista de Projetos
-          </button>
-          <button
-            className={abaAtiva === "cadastro" ? "active" : ""}
-            onClick={() => setAbaAtiva("cadastro")}
-          >
-            Cadastrar Membros
-          </button>
-        </nav>
-        <button className="btn-sair-admin">Sair</button>
+          <nav className="admin-nav">
+            <button className={abaAtiva === "dashboard" ? "active" : ""} onClick={() => setAbaAtiva("dashboard")}>
+              Dashboard
+            </button>
+            <button className={abaAtiva === "membros" ? "active" : ""} onClick={() => setAbaAtiva("membros")}>
+              Membros
+            </button>
+            <button className={abaAtiva === "projetos" ? "active" : ""} onClick={() => setAbaAtiva("projetos")}>
+              Projetos
+            </button>
+            <button className={abaAtiva === "lista" ? "active" : ""} onClick={() => setAbaAtiva("lista")}>
+              Alocações
+            </button>
+          </nav>
+          <button className="btn-sair-admin">Sair</button>
       </aside>
 
       {/* MAIN */}
@@ -135,120 +140,42 @@ const DashboardAdmin = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Sistema de Gestão</td>
-                      <td>João Victor</td>
-                      <td>
-                        <span className="status-p">Pendente</span>
-                      </td>
-                      <td>
-                        <button className="btn-link-edit">Editar</button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn-link-del"
-                          onClick={() =>
-                            abrirModal("projeto", "Sistema de Gestão")
-                          }
-                        >
-                          Remover
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>App Mobile</td>
-                      <td>Mariana S.</td>
-                      <td>
-                        <span className="status-p">Pendente</span>
-                      </td>
-                      <td>
-                        <button className="btn-link-edit">Editar</button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn-link-del"
-                          onClick={() => abrirModal("projeto", "App Mobile")}
-                        >
-                          Remover
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Plataforma Web</td>
-                      <td>Lucas R.</td>
-                      <td>
-                        <span className="status-a">Atrasado</span>
-                      </td>
-                      <td>
-                        <button className="btn-link-edit">Editar</button>
-                      </td>
-                      <td>
-                        <button
-                          className="btn-link-del"
-                          onClick={() =>
-                            abrirModal("projeto", "Plataforma Web")
-                          }
-                        >
-                          Remover
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="tabela-container-admin">
-                <h3>Membros Cadastrados</h3>
-                <table className="tabela-admin">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Cargo</th>
-                      <th>Config</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {membersLoading && (
+                    {allocationsLoading && (
                       <tr>
-                        <td colSpan="3">Carregando membros...</td>
+                        <td colSpan="5" style={{ textAlign: "center" }}>Carregando projetos...</td>
                       </tr>
                     )}
 
-                    {membersError && (
+                    {allocationsError && (
                       <tr>
-                        <td colSpan="3">{membersError}</td>
+                        <td colSpan="5" style={{ textAlign: "center", color: "red" }}>{allocationsError}</td>
                       </tr>
                     )}
 
-                    {!membersLoading &&
-                      !membersError &&
-                      members.length === 0 && (
-                        <tr>
-                          <td colSpan="3">Nenhum membro cadastrado.</td>
-                        </tr>
-                      )}
+                    {!allocationsLoading && !allocationsError && allocations.length === 0 && (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: "center" }}>Nenhuma alocação encontrada.</td>
+                      </tr>
+                    )}
 
-                    {!membersLoading &&
-                      !membersError &&
-                      members.map((member) => (
-                        <tr key={member.id}>
-                          <td className="td-membro">
-                            <img src={avatar} alt="User" /> {member.name}
+                    {!allocationsLoading &&
+                      !allocationsError &&
+                      allocations.map((aloc) => (
+                        <tr key={aloc.id}>
+                          {/* Verificamos se o projeto e membro existem, caso algum tenha sido deletado do banco */}
+                          <td>{aloc.project?.name || "Projeto Desconhecido"}</td>
+                          <td>{aloc.member?.name || "Membro Desconhecido"}</td>
+                          <td>
+                            {/* Como a alocação não trouxe 'status', vou deixar um genérico, ou podemos ajustar se houver status no DB */}
+                            <span className="status-p">Alocado</span>
                           </td>
-                          <td>{member.position}</td>
+                          <td>
+                            <button className="btn-link-edit">Editar</button>
+                          </td>
                           <td>
                             <button
-                              className="btn-link-edit"
-                              onClick={() => setAbaAtiva("editar")}
-                            >
-                              Editar
-                            </button>
-                            <span className="divisor">/</span>
-                            <button
                               className="btn-link-del"
-                              onClick={() =>
-                                abrirModal("membro", member.name)
-                              }
+                              onClick={() => abrirModal("alocação", aloc.project?.name, aloc.id)}
                             >
                               Remover
                             </button>
@@ -258,64 +185,26 @@ const DashboardAdmin = () => {
                   </tbody>
                 </table>
               </div>
+
+              
             </div>
           )}
 
-          {/* TELA 2: CADASTRO / EDITAR MEMBRO */}
-          {(abaAtiva === "cadastro" || abaAtiva === "editar") && (
-            <div className="view-cadastro-membro">
-              <button
-                className="btn-back-circle-admin"
-                onClick={() => setAbaAtiva("dashboard")}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#df8a43"
-                  strokeWidth="3"
-                >
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <h1 className="titulo-central-admin">
-                {abaAtiva === "cadastro" ? "Mega Cadastro" : "Editar Membro"}
-              </h1>
-
-              <div className="form-admin">
-                <div className="form-row-admin">
-                  <div className="form-group">
-                    <label>Nome do membro</label>
-                    <input type="text" className="input-admin" />
-                  </div>
-                  <div className="form-group">
-                    <label>Back/front/fullstack</label>
-                    <input type="text" className="input-admin" />
-                  </div>
-                </div>
-                <div className="form-row-admin">
-                  <div className="form-group">
-                    <label>Hora semanal</label>
-                    <input type="text" className="input-admin" />
-                  </div>
-                  <div className="form-group">
-                    <label>Gerente/Adm/Dev</label>
-                    <input type="text" className="input-admin" />
-                  </div>
-                </div>
-                <div className="form-row-admin">
-                  <div className="form-group">
-                    <label>Data de Admissão</label>
-                    <input type="text" className="input-admin" />
-                  </div>
-                </div>
-                <button className="btn-submit-admin">
-                  {abaAtiva === "cadastro" ? "Criar" : "Editar"}
-                </button>
-              </div>
-            </div>
+          {/* TELA DE MEMBROS (Lista e Formulários) */}
+          {(abaAtiva === "membros" || abaAtiva === "cadastro" || abaAtiva === "editar") && (
+            <MembrosTab />
           )}
+
+          {/* TELA DE PROJETOS/ALOCAÇÕES */}
+          {abaAtiva === "lista" && (
+            <ProjetosTab />
+          )}
+
+          {/* TELA DE GESTÃO DE PROJETOS REAIS */}
+          {abaAtiva === "projetos" && (
+            <GestaoProjetos />
+          )}
+
         </section>
 
         <footer className="footer-admin">
