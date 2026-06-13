@@ -5,15 +5,17 @@ import DashboardTab from "./components/DashboardTab";
 
 const DashboardGerente = ({ onLogout }) => {
   const [abaAtiva, setAbaAtiva] = useState("dashboard");
+  const [projetoDetalhe, setProjetoDetalhe] = useState(null);
+
+  const trocarAba = (aba) => {
+    setAbaAtiva(aba);
+    setProjetoDetalhe(null);
+  };
 
   const handleLogout = () => {
     if (onLogout) {
       onLogout();
     }
-  };
-
-  const emBreve = () => {
-    alert("Funcionalidade disponível em versão futura.");
   };
 
   const membros = [
@@ -32,30 +34,75 @@ const DashboardGerente = ({ onLogout }) => {
       resp: "João Victor",
       status: "Pendente",
       prazo: "30/03/2026",
-      progresso: "89%",
     },
     {
       nome: "App Mobile",
       resp: "Mariana S.",
       status: "Pendente",
       prazo: "15/06/2026",
-      progresso: "40%",
     },
     {
       nome: "Plataforma Web",
       resp: "Lucas R.",
       status: "Atrasado",
       prazo: "20/03/2026",
-      progresso: "70%",
     },
     {
       nome: "Painel Administrativo",
       resp: "Ana Clara",
       status: "Concluido",
       prazo: "18/02/2026",
-      progresso: "100%",
     },
   ];
+
+  const projetosCatalogo = [
+    {
+      nome: "Plataforma Web",
+      tipo: "Full Stack",
+      prazo: "20/03/2026",
+      status: "Atrasado",
+      descricao:
+        "Portal institucional com área pública e painel administrativo para gestão de conteúdo.",
+      responsavel: "Lucas R.",
+      membros: ["Lucas R.", "Beatriz L."],
+    },
+    {
+      nome: "App Mobile",
+      tipo: "Mobile",
+      prazo: "15/06/2026",
+      status: "Pendente",
+      descricao:
+        "Aplicativo para acompanhamento de projetos e alocações dos membros em tempo real.",
+      responsavel: "Mariana S.",
+      membros: ["Mariana S.", "Pedrao H."],
+    },
+    {
+      nome: "Sistema de Gestão",
+      tipo: "Full Stack",
+      prazo: "30/03/2026",
+      status: "Pendente",
+      descricao:
+        "Sistema interno para cadastro de membros, projetos e alocações da Mega Jr.",
+      responsavel: "João Victor",
+      membros: ["João Victor", "Ana Clara", "Bruna M."],
+    },
+    {
+      nome: "Painel Administrativo",
+      tipo: "Front-end",
+      prazo: "18/02/2026",
+      status: "Concluido",
+      descricao:
+        "Dashboard com indicadores de carga de trabalho e status dos projetos ativos.",
+      responsavel: "Ana Clara",
+      membros: ["Ana Clara", "João Victor"],
+    },
+  ];
+
+  const statusDotClass = (status) => {
+    if (status === "Atrasado") return "status-dot status-dot-red";
+    if (status === "Concluido") return "status-dot status-dot-green";
+    return "status-dot status-dot-orange";
+  };
 
   return (
     <div className="gerente-container">
@@ -67,28 +114,28 @@ const DashboardGerente = ({ onLogout }) => {
         <nav className="gerente-nav">
           <button
             className={abaAtiva === "dashboard" ? "active" : ""}
-            onClick={() => setAbaAtiva("dashboard")}
+            onClick={() => trocarAba("dashboard")}
           >
             Dashboard
           </button>
 
           <button
             className={abaAtiva === "membros" ? "active" : ""}
-            onClick={() => setAbaAtiva("membros")}
+            onClick={() => trocarAba("membros")}
           >
             Membros
           </button>
 
           <button
             className={abaAtiva === "lista" ? "active" : ""}
-            onClick={() => setAbaAtiva("lista")}
+            onClick={() => trocarAba("lista")}
           >
             Lista de Projetos
           </button>
 
           <button
             className={abaAtiva === "carga" ? "active" : ""}
-            onClick={() => setAbaAtiva("carga")}
+            onClick={() => trocarAba("carga")}
           >
             Painel de carga
           </button>
@@ -101,21 +148,6 @@ const DashboardGerente = ({ onLogout }) => {
 
       <main className="gerente-main">
         <header className="gerente-header">
-          <div className="header-left">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-            >
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </div>
-
           <div className="perfil-gerente">
             <div className="texto-perfil">
               <span className="nome-gerente">Olá, Roberto</span>
@@ -151,21 +183,39 @@ const DashboardGerente = ({ onLogout }) => {
 
                   <div className="lista-atividades">
                     <div className="atividade-item">
-                      <div className="dot green"></div> Projeto Plataforma Web
-                      está com atrasado <br />
-                      <span>por Lucas R.</span>
+                      <div className="dot red"></div>
+                      <div className="atividade-texto-container">
+                        <span className="atividade-texto">
+                          Projeto Plataforma Web marcado como atrasado.
+                        </span>
+                        <span className="atividade-subtexto">
+                          Revisar prazo e responsável.
+                        </span>
+                      </div>
                     </div>
 
                     <div className="atividade-item">
-                      <div className="dot orange"></div> Novo membro Pedro H
-                      entrou na equipe <br />
-                      <span>por Diretor Roberto</span>
+                      <div className="dot green"></div>
+                      <div className="atividade-texto-container">
+                        <span className="atividade-texto">
+                          Pedro H. foi adicionado à equipe.
+                        </span>
+                        <span className="atividade-subtexto">
+                          Novo membro disponível para alocação.
+                        </span>
+                      </div>
                     </div>
 
                     <div className="atividade-item">
-                      <div className="dot orange"></div> Projeto App Mobile foi
-                      concluído <br />
-                      <span>por Mariana S.</span>
+                      <div className="dot orange"></div>
+                      <div className="atividade-texto-container">
+                        <span className="atividade-texto">
+                          Projeto App Mobile foi concluído.
+                        </span>
+                        <span className="atividade-subtexto">
+                          Entrega registrada por Mariana S.
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -175,23 +225,31 @@ const DashboardGerente = ({ onLogout }) => {
 
                   <div className="legenda-grafico">
                     <div>
-                      <div className="dot green"></div> Concluidos 4 (33%)
+                      <div className="dot green"></div> Concluídos: 4
                     </div>
 
                     <div>
-                      <div className="dot orange"></div> Em andamento 6 (50%)
+                      <div className="dot orange"></div> Em andamento: 6
                     </div>
 
                     <div>
-                      <div className="dot red"></div> Atrasados 2 (17%)
+                      <div className="dot red"></div> Atrasados: 2
                     </div>
                   </div>
 
                   <div className="barras-container">
-                    <div className="barra-item" style={{ height: "60%" }}></div>
-                    <div className="barra-item" style={{ height: "80%" }}></div>
-                    <div className="barra-item" style={{ height: "40%" }}></div>
-                    <div className="barra-item" style={{ height: "90%" }}></div>
+                    <div
+                      className="barra-item barra-verde"
+                      style={{ height: "67%" }}
+                    ></div>
+                    <div
+                      className="barra-item barra-laranja"
+                      style={{ height: "100%" }}
+                    ></div>
+                    <div
+                      className="barra-item barra-vermelha"
+                      style={{ height: "33%" }}
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -204,11 +262,10 @@ const DashboardGerente = ({ onLogout }) => {
                 <table className="tabela-gerente">
                   <thead>
                     <tr>
-                      <th>Projetos</th>
+                      <th>Projeto</th>
                       <th>Responsável</th>
                       <th>Status</th>
                       <th>Prazo</th>
-                      <th>Progresso</th>
                     </tr>
                   </thead>
 
@@ -216,20 +273,18 @@ const DashboardGerente = ({ onLogout }) => {
                     {projetosAtivos.map((p, i) => (
                       <tr key={i}>
                         <td>{p.nome}</td>
-                        <td>{p.resp}</td>
+                        <td className="resp-cell">
+                          <img
+                            src={avatar}
+                            alt={p.resp}
+                            className="avatar-resp"
+                          />
+                          {p.resp}
+                        </td>
                         <td className={`status-${p.status.toLowerCase()}`}>
                           {p.status}
                         </td>
                         <td>{p.prazo}</td>
-                        <td>
-                          <div className="barra-progresso">
-                            <div
-                              className="fill"
-                              style={{ width: p.progresso }}
-                            ></div>
-                          </div>
-                          {p.progresso}
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -283,7 +338,7 @@ const DashboardGerente = ({ onLogout }) => {
             </div>
           )}
 
-          {abaAtiva === "lista" && (
+          {abaAtiva === "lista" && projetoDetalhe === null && (
             <div className="view-lista-projetos">
               <div className="busca-gerente-container">
                 <input
@@ -291,8 +346,44 @@ const DashboardGerente = ({ onLogout }) => {
                   placeholder="Buscar Projeto"
                   className="input-membros"
                 />
+              </div>
 
-                <button className="btn-back-circle">
+              <h1 className="titulo-central-gerente">Selecione Um Projeto</h1>
+
+              <div className="grid-projetos-gerente">
+                {projetosCatalogo.map((p, i) => (
+                  <div className="card-projeto-gerente" key={i}>
+                    <div className={statusDotClass(p.status)}></div>
+
+                    <h3>{p.nome}</h3>
+
+                    <div className="tags-gerente">
+                      <span className="t-orange">{p.tipo}</span>
+                      <span className="t-gray">{p.status}</span>
+                    </div>
+
+                    <p>Prazo: {p.prazo}</p>
+
+                    <p className="desc-p">{p.descricao}</p>
+
+                    <div className="btns-card">
+                      <button onClick={() => setProjetoDetalhe(i)}>
+                        Ver detalhes
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {abaAtiva === "lista" && projetoDetalhe !== null && (
+            <div className="view-detalhe-projeto">
+              <div className="busca-gerente-container">
+                <button
+                  className="btn-back-circle"
+                  onClick={() => setProjetoDetalhe(null)}
+                >
                   <svg
                     width="20"
                     height="20"
@@ -306,31 +397,63 @@ const DashboardGerente = ({ onLogout }) => {
                 </button>
               </div>
 
-              <h1 className="titulo-central-gerente">Selecione Um Projeto</h1>
+              <h1 className="titulo-central-gerente">
+                {projetosCatalogo[projetoDetalhe].nome}
+              </h1>
 
-              <div className="grid-projetos-gerente">
-                {[1, 2, 3, 4, 5, 6].map((p) => (
-                  <div className="card-projeto-gerente" key={p}>
-                    <div className="status-dot-red"></div>
+              <div className="card-detalhe-projeto">
+                <div className="tags-gerente">
+                  <span className="t-orange">
+                    {projetosCatalogo[projetoDetalhe].tipo}
+                  </span>
+                  <span className="t-gray">
+                    {projetosCatalogo[projetoDetalhe].status}
+                  </span>
+                </div>
 
-                    <h3>Plataforma Web</h3>
+                <p className="desc-p">
+                  {projetosCatalogo[projetoDetalhe].descricao}
+                </p>
 
-                    <div className="tags-gerente">
-                      <span className="t-orange">Facebook</span>
-                      <span className="t-gray">Full Stack</span>
-                    </div>
+                <div className="dados-detalhe-projeto">
+                  <div className="coluna-dado">
+                    <span className="label-dado">Prazo</span>
+                    <span className="valor-dado">
+                      {projetosCatalogo[projetoDetalhe].prazo}
+                    </span>
+                  </div>
 
-                    <p>Prazo: 12/06/2023</p>
+                  <div className="coluna-dado">
+                    <span className="label-dado">Status</span>
+                    <span className="valor-dado">
+                      {projetosCatalogo[projetoDetalhe].status}
+                    </span>
+                  </div>
+                </div>
 
-                    <p className="desc-p">
-                      Desenvolvimento de nova plataforma web institucional.
-                    </p>
+                <div className="secao-pessoas-projeto">
+                  <h3>Responsável</h3>
 
-                    <div className="btns-card">
-                      <button onClick={emBreve}>Ver detalhes</button>
+                  <div className="membro-row">
+                    <div className="membro-info">
+                      <img src={avatar} alt="Responsável" />
+                      <span>{projetosCatalogo[projetoDetalhe].responsavel}</span>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                <div className="secao-pessoas-projeto">
+                  <h3>Membros envolvidos</h3>
+
+                  {projetosCatalogo[projetoDetalhe].membros.map((m, i) => (
+                    <div className="membro-row" key={i}>
+                      <div className="membro-info">
+                        <img src={avatar} alt={m} />
+                        <span>{m}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}

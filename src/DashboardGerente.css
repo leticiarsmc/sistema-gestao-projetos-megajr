@@ -1,6 +1,7 @@
 .gerente-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #000;
   color: white;
   font-family: sans-serif;
@@ -8,6 +9,7 @@
 
 .gerente-sidebar {
   width: 260px;
+  flex-shrink: 0;
   background-color: #df8a43;
   display: flex;
   flex-direction: column;
@@ -15,9 +17,7 @@
   align-items: center;
   border-top-right-radius: 40px;
   border-bottom-right-radius: 40px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
 }
 
 .logo-mega-gerente {
@@ -68,11 +68,13 @@
   display: flex;
   flex-direction: column;
   padding: 20px 40px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .gerente-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 30px;
 }
@@ -159,14 +161,34 @@
 
 .atividade-item {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
   font-size: 0.85rem;
 }
 
-.atividade-item span {
+.atividade-item:last-child {
+  margin-bottom: 0;
+}
+
+.atividade-item .dot {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.atividade-texto-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.atividade-item .atividade-texto {
+  color: #fff;
+}
+
+.atividade-subtexto {
   color: #888;
+  font-size: 0.78rem;
 }
 
 .dot {
@@ -184,6 +206,19 @@
   background-color: red;
 }
 
+.legenda-grafico {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.legenda-grafico > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .barras-container {
   display: flex;
   align-items: flex-end;
@@ -196,6 +231,18 @@
   flex: 1;
   background-color: #df8a43;
   border-radius: 5px 5px 0 0;
+}
+
+.barra-verde {
+  background-color: #32cd32;
+}
+
+.barra-laranja {
+  background-color: #df8a43;
+}
+
+.barra-vermelha {
+  background-color: red;
 }
 
 .secao-projetos-ativos {
@@ -230,6 +277,20 @@
 .tabela-gerente td {
   padding: 15px;
   border-bottom: 1px solid #444;
+  vertical-align: middle;
+}
+
+.resp-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-resp {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #df8a43;
 }
 
 .tabela-gerente tbody tr:last-child td {
@@ -246,20 +307,6 @@
   color: #32cd32;
 }
 
-.barra-progresso {
-  width: 100px;
-  height: 8px;
-  background-color: #444;
-  border-radius: 10px;
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.barra-progresso .fill {
-  height: 100%;
-  background-color: #df8a43;
-  border-radius: 10px;
-}
 
 .busca-gerente-container {
   display: flex;
@@ -340,14 +387,25 @@
   position: relative;
 }
 
-.status-dot-red {
+.status-dot {
   width: 12px;
   height: 12px;
-  background-color: red;
   border-radius: 50%;
   position: absolute;
   right: 30px;
   top: 30px;
+}
+
+.status-dot-red {
+  background-color: red;
+}
+
+.status-dot-orange {
+  background-color: #df8a43;
+}
+
+.status-dot-green {
+  background-color: #32cd32;
 }
 
 .tags-gerente {
@@ -368,6 +426,67 @@
   border-radius: 10px;
   font-size: 0.7rem;
   font-weight: bold;
+}
+
+.desc-p {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.view-detalhe-projeto {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.card-detalhe-projeto {
+  background-color: #2a2a2a;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+.card-detalhe-projeto .desc-p {
+  margin-bottom: 20px;
+}
+
+.dados-detalhe-projeto {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.coluna-dado {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label-dado {
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.valor-dado {
+  font-size: 1rem;
+}
+
+.secao-pessoas-projeto {
+  margin-top: 20px;
+}
+
+.secao-pessoas-projeto h3 {
+  margin: 0 0 10px;
+  color: #df8a43;
+  font-size: 1rem;
+}
+
+.secao-pessoas-projeto .membro-row {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  border-bottom: none;
+  margin-bottom: 10px;
 }
 
 .btns-card {
