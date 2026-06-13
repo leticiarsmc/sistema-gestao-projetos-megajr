@@ -1,6 +1,7 @@
 .admin-container {
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   background-color: #000;
   color: white;
@@ -10,7 +11,6 @@
 /* SIDEBAR */
 .admin-sidebar {
   flex: 0 0 280px;
-  min-height: 100vh;
   background-color: #df8a43;
   display: flex;
   flex-direction: column;
@@ -18,9 +18,7 @@
   align-items: center;
   border-top-right-radius: 40px;
   border-bottom-right-radius: 40px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
 }
 
 .logo-mega-admin {
@@ -77,7 +75,8 @@
 .admin-main {
   flex: 1;
   min-width: 0;
-  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding: 24px 56px 32px;
@@ -86,7 +85,7 @@
 .admin-header {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 42px;
 }
@@ -122,7 +121,7 @@
 
 .admin-content {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
@@ -210,6 +209,26 @@
   color: #ffffff;
 }
 
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.25rem;
+}
+
+.admin-card-header h3 {
+  margin: 0;
+  text-align: left;
+}
+
+.admin-card-header .btn-submit-admin {
+  width: auto;
+  margin: 0;
+  padding: 10px 20px;
+  flex-shrink: 0;
+}
+
 .tabela-admin {
   width: 100%;
   border-collapse: collapse;
@@ -291,17 +310,26 @@
 }
 
 .td-membro {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
-  min-width: 160px;
+  white-space: nowrap;
 }
 
+.cel-pessoa {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cel-pessoa img,
 .td-membro img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  border: 1px solid #df8a43;
+  flex-shrink: 0;
+}
+
+.td-config {
+  white-space: nowrap;
 }
 
 /* CADASTRO / FORMULÁRIOS */
@@ -475,16 +503,22 @@
 @media (max-width: 820px) {
   .admin-container {
     flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
 
   .admin-sidebar {
     width: 100%;
     flex: none;
-    min-height: auto;
     height: auto;
     position: relative;
     border-radius: 0 0 28px 28px;
     padding: 1.5rem 1rem;
+  }
+
+  .admin-main {
+    height: auto;
+    overflow-y: visible;
   }
 
   .logo-mega-admin {

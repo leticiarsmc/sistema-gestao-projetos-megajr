@@ -5,13 +5,20 @@ import {
   updateAllocation,
   deleteAllocation,
 } from "../services/allocationService";
+import { getMembers } from "../services/memberService";
+import { getProjects } from "../services/projectService";
+import { formatProjectStatus } from "../utils/projectStatus";
 import patoTriste from "../assets/patotriste.png";
+import avatar from "../assets/avatar.png";
 
 const ProjetosTab = () => {
   const [subAba, setSubAba] = useState("lista");
   const [allocations, setAllocations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [members, setMembers] = useState([]);
+  const [projects, setProjects] = useState([]);
 
   const [modal, setModal] = useState({ aberto: false, id: null, nomeProjeto: "" });
 
@@ -35,8 +42,19 @@ const ProjetosTab = () => {
     }
   };
 
+  const carregarOpcoes = async () => {
+    try {
+      const [membersData, projectsData] = await Promise.all([getMembers(), getProjects()]);
+      setMembers(membersData);
+      setProjects(projectsData);
+    } catch (err) {
+      alert("Erro ao carregar membros/projetos: " + err.message);
+    }
+  };
+
   useEffect(() => {
     carregarAlocacoes();
+    carregarOpcoes();
   }, []);
 
   const abrirModalExcluir = (id, nomeProjeto) => setModal({ aberto: true, id, nomeProjeto });
@@ -88,26 +106,22 @@ const ProjetosTab = () => {
     }
   };
 
-  const copiarId = (id) => {
-    navigator.clipboard.writeText(id);
-    alert("ID copiado com sucesso: " + id);
-  };
-
   // NOVA FUNÇÃO: Transforma o texto cru do Prisma em uma etiqueta (badge) colorida
   const renderStatus = (status) => {
     const baseStyle = { padding: "4px 10px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "bold" };
-    
+    const label = formatProjectStatus(status);
+
     switch (status) {
       case "PLANNING":
-        return <span style={{ ...baseStyle, backgroundColor: "#e2e8f0", color: "#475569" }}>Planejamento</span>;
+        return <span style={{ ...baseStyle, backgroundColor: "#e2e8f0", color: "#475569" }}>{label}</span>;
       case "IN_PROGRESS":
-        return <span style={{ ...baseStyle, backgroundColor: "#fef08a", color: "#854d0e" }}>Em Progresso</span>;
+        return <span style={{ ...baseStyle, backgroundColor: "#fef08a", color: "#854d0e" }}>{label}</span>;
       case "DONE":
-        return <span style={{ ...baseStyle, backgroundColor: "#bbf7d0", color: "#166534" }}>Concluído</span>;
+        return <span style={{ ...baseStyle, backgroundColor: "#bbf7d0", color: "#166534" }}>{label}</span>;
       case "CANCELLED":
-        return <span style={{ ...baseStyle, backgroundColor: "#fecaca", color: "#991b1b" }}>Cancelado</span>;
+        return <span style={{ ...baseStyle, backgroundColor: "#fecaca", color: "#991b1b" }}>{label}</span>;
       default:
-        return <span style={{ ...baseStyle, backgroundColor: "#f3f4f6", color: "#374151" }}>Indefinido</span>;
+        return <span style={{ ...baseStyle, backgroundColor: "#f3f4f6", color: "#374151" }}>{label || "Indefinido"}</span>;
     }
   };
 
@@ -141,9 +155,9 @@ const ProjetosTab = () => {
       {/* TELA 1: LISTA EXPANDIDA */}
       {subAba === "lista" && (
         <div className="tabela-container-admin">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <div className="admin-card-header">
             <h3>Lista de Alocações</h3>
-            <button className="btn-submit-admin" onClick={navegarParaCadastro} style={{ width: "auto", margin: 0, padding: "8px 16px" }}>
+            <button className="btn-submit-admin" onClick={navegarParaCadastro}>
               + Nova Alocação
             </button>
           </div>
@@ -151,55 +165,33 @@ const ProjetosTab = () => {
           <table className="tabela-admin">
             <thead>
               <tr>
-                <th>ID Alocação</th>
                 <th>Projeto</th>
-                <th>Status</th> {/* NOVA COLUNA DE STATUS */}
+                <th>Status</th>
                 <th>Membro</th>
                 <th>Responsabilidade</th>
                 <th>Config</th>
               </tr>
             </thead>
             <tbody>
-              {/* Ajustei o colSpan para 6 por causa da nova coluna */}
-              {loading && <tr><td colSpan="6">Carregando alocações...</td></tr>}
-              {error && <tr><td colSpan="6" style={{ color: "red" }}>{error}</td></tr>}
-              {!loading && !error && allocations.length === 0 && <tr><td colSpan="6">Nenhuma alocação encontrada.</td></tr>}
-              
+              {loading && <tr><td colSpan="5">Carregando alocações...</td></tr>}
+              {error && <tr><td colSpan="5" style={{ color: "red" }}>{error}</td></tr>}
+              {!loading && !error && allocations.length === 0 && <tr><td colSpan="5">Nenhuma alocação encontrada.</td></tr>}
+
               {!loading && !error && allocations.map((aloc) => (
                 <tr key={aloc.id}>
-                  {/* COLUNA DE ID COM BOTÃO DE COPIAR */}
-                  <td>
-                    <span style={{ fontSize: "0.85rem", opacity: 0.8, marginRight: "8px" }}>
-                      {aloc.id.substring(0, 8)}...
-                    </span>
-                    <button 
-                      onClick={() => copiarId(aloc.id)} 
-                      title="Copiar ID completo"
-                      style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem" }}
-                    >
-                      📋
-                    </button>
-                  </td>
-                  <td>
-                    {aloc.project?.name || "N/A"}
-                    {aloc.projectId && (
-                      <button 
-                        onClick={() => copiarId(aloc.projectId)} 
-                        title="Copiar ID do Projeto"
-                        style={{ background: "none", border: "none", cursor: "pointer", marginLeft: "8px", fontSize: "1rem" }}
-                        type="button"
-                      >
-                        📋
-                      </button>
-                    )}
-                  </td>
+                  <td>{aloc.project?.name || "N/A"}</td>
                   {/* EXIBINDO A ETIQUETA DE STATUS */}
                   <td>
                     {renderStatus(aloc.project?.status)}
                   </td>
-                  <td>{aloc.member?.name || "N/A"}</td>
+                  <td className="td-membro">
+                    <span className="cel-pessoa">
+                      {aloc.member?.name && <img src={avatar} alt={aloc.member.name} />}
+                      {aloc.member?.name || "N/A"}
+                    </span>
+                  </td>
                   <td>{aloc.responsibility || "Não definida"}</td>
-                  <td>
+                  <td className="td-config">
                     <button className="btn-link-edit" onClick={() => navegarParaEdicao(aloc)}>Editar</button>
                     <span className="divisor">/</span>
                     <button className="btn-link-del" onClick={() => abrirModalExcluir(aloc.id, aloc.project?.name)}>Remover</button>
@@ -227,12 +219,26 @@ const ProjetosTab = () => {
             {subAba === "cadastro" && (
               <div className="form-row-admin">
                 <div className="form-group">
-                  <label>ID do Membro (Copie na aba de Membros)</label>
-                  <input type="text" className="input-admin" value={formData.memberId} onChange={(e) => setFormData({ ...formData, memberId: e.target.value })} required />
+                  <label>Membro</label>
+                  <select className="input-admin" value={formData.memberId} onChange={(e) => setFormData({ ...formData, memberId: e.target.value })} required>
+                    <option value="">Selecione um membro</option>
+                    {members.map((member) => (
+                      <option key={member.id} value={member.id}>
+                        {member.name} - {member.position}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="form-group">
-                  <label>ID do Projeto</label>
-                  <input type="text" className="input-admin" value={formData.projectId} onChange={(e) => setFormData({ ...formData, projectId: e.target.value })} required />
+                  <label>Projeto</label>
+                  <select className="input-admin" value={formData.projectId} onChange={(e) => setFormData({ ...formData, projectId: e.target.value })} required>
+                    <option value="">Selecione um projeto</option>
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.name} - {formatProjectStatus(project.status)}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             )}

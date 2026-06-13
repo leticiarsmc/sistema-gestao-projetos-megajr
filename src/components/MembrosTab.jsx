@@ -97,12 +97,6 @@ const MembrosTab = () => {
     }
   };
 
-  // NOVA FUNÇÃO: Copiar ID para a área de transferência
-  const copiarId = (id) => {
-    navigator.clipboard.writeText(id);
-    alert("ID copiado com sucesso: " + id);
-  };
-
   return (
     <div className="membros-tab-container">
       {/* MODAL DE REMOÇÃO ESPECÍFICO DE MEMBROS */}
@@ -133,9 +127,9 @@ const MembrosTab = () => {
       {/* SUB-TELA 1: LISTAGEM DE MEMBROS */}
       {subAba === "lista" && (
         <div className="tabela-container-admin">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <div className="admin-card-header">
             <h3>Membros Cadastrados</h3>
-            <button className="btn-submit-admin" onClick={navegarParaCadastro} style={{ width: "auto", margin: 0, padding: "8px 16px" }}>
+            <button className="btn-submit-admin" onClick={navegarParaCadastro}>
               + Cadastrar Membro
             </button>
           </div>
@@ -143,7 +137,6 @@ const MembrosTab = () => {
           <table className="tabela-admin">
             <thead>
               <tr>
-                <th>ID</th> {/* NOVA COLUNA */}
                 <th>Nome</th>
                 <th>E-mail</th>
                 <th>Cargo</th>
@@ -153,44 +146,32 @@ const MembrosTab = () => {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan="5">Carregando membros...</td>
+                  <td colSpan="4">Carregando membros...</td>
                 </tr>
               )}
 
               {error && (
                 <tr>
-                  <td colSpan="5" style={{ color: "red" }}>{error}</td>
+                  <td colSpan="4" style={{ color: "red" }}>{error}</td>
                 </tr>
               )}
 
               {!loading && !error && members.length === 0 && (
                 <tr>
-                  <td colSpan="5">Nenhum membro cadastrado.</td>
+                  <td colSpan="4">Nenhum membro cadastrado.</td>
                 </tr>
               )}
 
               {!loading && !error && members.map((member) => (
                 <tr key={member.id}>
-                  {/* EXIBIÇÃO DO ID E BOTÃO DE COPIAR */}
-                  <td>
-                    <span style={{ fontSize: "0.85rem", opacity: 0.8, marginRight: "8px" }}>
-                      {/* Exibe apenas o começo do ID para não quebrar a tabela */}
-                      {member.id.substring(0, 8)}...
-                    </span>
-                    <button 
-                      onClick={() => copiarId(member.id)} 
-                      title="Copiar ID completo"
-                      style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem" }}
-                    >
-                      📋
-                    </button>
-                  </td>
                   <td className="td-membro">
-                    <img src={avatar} alt="User" /> {member.name}
+                    <span className="cel-pessoa">
+                      <img src={avatar} alt="User" /> {member.name}
+                    </span>
                   </td>
                   <td>{member.email}</td>
                   <td>{member.position}</td>
-                  <td>
+                  <td className="td-config">
                     <button className="btn-link-edit" onClick={() => navegarParaEdicao(member)}>
                       Editar
                     </button>

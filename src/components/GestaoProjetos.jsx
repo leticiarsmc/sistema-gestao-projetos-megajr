@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getProjects, createProject, updateProject, deleteProject } from "../services/projectService";
+import { formatProjectStatus } from "../utils/projectStatus";
 import patoTriste from "../assets/patotriste.png";
 
 const GestaoProjetos = () => {
@@ -96,11 +97,6 @@ const GestaoProjetos = () => {
     }
   };
 
-  const copiarId = (id) => {
-    navigator.clipboard.writeText(id);
-    alert("ID do Projeto copiado com sucesso: " + id);
-  };
-
   return (
     <div className="membros-tab-container">
       {modal.aberto && (
@@ -123,9 +119,9 @@ const GestaoProjetos = () => {
 
       {subAba === "lista" && (
         <div className="tabela-container-admin">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <div className="admin-card-header">
             <h3>Gerenciamento de Projetos</h3>
-            <button className="btn-submit-admin" onClick={navegarParaCadastro} style={{ width: "auto", margin: 0, padding: "8px 16px" }}>
+            <button className="btn-submit-admin" onClick={navegarParaCadastro}>
               + Criar Projeto
             </button>
           </div>
@@ -133,7 +129,6 @@ const GestaoProjetos = () => {
           <table className="tabela-admin">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nome</th>
                 <th>Status</th>
                 <th>Início</th>
@@ -141,24 +136,16 @@ const GestaoProjetos = () => {
               </tr>
             </thead>
             <tbody>
-              {loading && <tr><td colSpan="5">Carregando projetos...</td></tr>}
-              {error && <tr><td colSpan="5" style={{ color: "red" }}>{error}</td></tr>}
-              {!loading && !error && projects.length === 0 && <tr><td colSpan="5">Nenhum projeto cadastrado.</td></tr>}
-              
+              {loading && <tr><td colSpan="4">Carregando projetos...</td></tr>}
+              {error && <tr><td colSpan="4" style={{ color: "red" }}>{error}</td></tr>}
+              {!loading && !error && projects.length === 0 && <tr><td colSpan="4">Nenhum projeto cadastrado.</td></tr>}
+
               {!loading && !error && projects.map((proj) => (
                 <tr key={proj.id}>
-                  <td>
-                    <span style={{ fontSize: "0.85rem", opacity: 0.8, marginRight: "8px" }}>
-                      {proj.id.substring(0, 8)}...
-                    </span>
-                    <button onClick={() => copiarId(proj.id)} title="Copiar ID completo" style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem" }}>
-                      📋
-                    </button>
-                  </td>
                   <td>{proj.name}</td>
-                  <td>{proj.status}</td>
+                  <td>{formatProjectStatus(proj.status)}</td>
                   <td>{new Date(proj.startDate).toLocaleDateString('pt-BR')}</td>
-                  <td>
+                  <td className="td-config">
                     <button className="btn-link-edit" onClick={() => navegarParaEdicao(proj)}>Editar</button>
                     <span className="divisor">/</span>
                     <button className="btn-link-del" onClick={() => abrirModalExcluir(proj.id, proj.name)}>Remover</button>
@@ -191,7 +178,7 @@ const GestaoProjetos = () => {
                 <label>Status</label>
                 <select className="input-admin" value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
                   <option value="PLANNING">Planejamento</option>
-                  <option value="IN_PROGRESS">Em Progresso</option>
+                  <option value="IN_PROGRESS">Em andamento</option>
                   <option value="DONE">Concluído</option>
                   <option value="CANCELLED">Cancelado</option>
                 </select>

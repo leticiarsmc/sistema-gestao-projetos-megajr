@@ -59,19 +59,6 @@ const DashboardAdmin = () => {
       {/* MAIN */}
       <main className="admin-main">
         <header className="admin-header">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-          >
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-
           <div className="perfil-admin">
             <div className="texto-perfil">
               <span className="nome-admin">Olá, Lucas</span>
