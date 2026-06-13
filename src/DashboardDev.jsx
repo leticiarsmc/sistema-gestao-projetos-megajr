@@ -3,7 +3,101 @@ import "./DashboardDev.css";
 import avatar from "./assets/avatar.png";
 
 const DashboardDev = ({ onLogout }) => {
-  const [telaAtual, setTelaAtual] = useState("dashboard");
+  const [abaAtiva, setAbaAtiva] = useState("projetos");
+  const [telaAtual, setTelaAtual] = useState("lista");
+  const [projetoSelecionado, setProjetoSelecionado] = useState(null);
+  const [alocacaoSelecionada, setAlocacaoSelecionada] = useState(0);
+  const [novaTarefa, setNovaTarefa] = useState("");
+
+  const projetosGerais = [
+    {
+      projeto: "Painel Administrativo",
+      cliente: "Facebook",
+      tipo: "Full Stack",
+      descricao: "Desenvolvimento de nova plataforma web institucional.",
+      inicio: "09/3/2025",
+      prazo: "12/7/2025",
+      status: "Em andamento",
+      membros: ["Fabio Akita", "Mariana S.", "Lucas R."],
+    },
+    {
+      projeto: "App Interno",
+      cliente: "Facebook",
+      tipo: "Mobile",
+      descricao: "Aplicativo interno para gestão de equipes.",
+      inicio: "23/9/2024",
+      prazo: "07/2/2025",
+      status: "Concluído",
+      membros: ["Fabio Akita", "Ana Clara"],
+    },
+    {
+      projeto: "Plataforma Web",
+      cliente: "Facebook",
+      tipo: "Full Stack",
+      descricao: "Desenvolvimento de nova plataforma web institucional.",
+      inicio: "20/01/2026",
+      prazo: "20/03/2026",
+      status: "Atrasado",
+      membros: ["Lucas R.", "Beatriz L."],
+    },
+  ];
+
+  const [alocacoes, setAlocacoes] = useState([
+    {
+      projeto: "Painel Administrativo",
+      cliente: "Facebook",
+      tipo: "Full Stack",
+      funcao: "Back-end",
+      data: "09/3/2025",
+      prazo: "12/7/2025",
+      status: "Em andamento",
+      descricao: "Desenvolvimento de nova plataforma web institucional.",
+      checklist: [
+        {
+          item: "Funcionalidades implementadas",
+          desc: "Todas as funcionalidades foram implementadas e testadas.",
+          status: "Completo",
+        },
+        {
+          item: "Testes realizados",
+          desc: "Testes unitários e de integração concluídos.",
+          status: "Completo",
+        },
+        {
+          item: "Documentação",
+          desc: "Documentação do código e da API atualizada.",
+          status: "Completo",
+        },
+        {
+          item: "Revisão do código",
+          desc: "Aguardando a revisão e aprovação do código",
+          status: "Pendente",
+        },
+      ],
+    },
+    {
+      projeto: "App Interno",
+      cliente: "Facebook",
+      tipo: "Mobile",
+      funcao: "Mobile",
+      data: "23/9/2024",
+      prazo: "07/2/2025",
+      status: "Concluído",
+      descricao: "Aplicativo interno para gestão de equipes.",
+      checklist: [
+        {
+          item: "Funcionalidades implementadas",
+          desc: "Todas as funcionalidades foram implementadas e testadas.",
+          status: "Completo",
+        },
+        {
+          item: "Testes realizados",
+          desc: "Testes unitários e de integração concluídos.",
+          status: "Completo",
+        },
+      ],
+    },
+  ]);
 
   const handleLogout = () => {
     if (onLogout) {
@@ -11,65 +105,75 @@ const DashboardDev = ({ onLogout }) => {
     }
   };
 
-  const projetos = Array(6).fill({
-    titulo: "Plataforma Web",
-    cliente: "Facebook",
-    tipo: "Full Stack",
-    prazo: "12/06/2023",
-    descricao: "Desenvolvimento de nova plataforma web institucional.",
-  });
+  const trocarAba = (aba) => {
+    setAbaAtiva(aba);
+    setTelaAtual("lista");
+    setProjetoSelecionado(null);
+  };
 
-  const alocacoes = [
-    {
-      projeto: "Painel Administrativo",
-      cliente: "Facebook",
-      funcao: "Back-end",
-      data: "09/3/2025",
-      prazo: "12/7/2025",
-      status: "Em andamento",
-    },
-    {
-      projeto: "App Interno",
-      cliente: "Facebook",
-      funcao: "Mobile",
-      data: "23/9/2024",
-      prazo: "07/2/2025",
-      status: "Concluído",
-    },
-  ];
+  const abrirDetalhesProjeto = (index) => {
+    setProjetoSelecionado(index);
+    setTelaAtual("detalhes-projeto");
+  };
 
-  const checklist = [
-    {
-      item: "Funcionalidades implementadas",
-      desc: "Todas as funcionalidades foram implementadas e testadas.",
-      status: "Completo",
-      cor: "verde",
-    },
-    {
-      item: "Testes realizados",
-      desc: "Testes unitários e de integração concluídos.",
-      status: "Completo",
-      cor: "verde",
-    },
-    {
-      item: "Documentação",
-      desc: "Documentação do código e da API atualizada.",
-      status: "Completo",
-      cor: "verde",
-    },
-    {
-      item: "Revisão do código",
-      desc: "Aguardando a revisão e aprovação do código",
-      status: "Pendente",
-      cor: "amarelo",
-    },
-    {
-      item: "Revisão do código",
-      desc: "Aguardando a revisão e aprovação do código",
-      status: "Pendente",
-      cor: "vermelho",
-    },
-  ];
+  const abrirQuadroEntregas = (index) => {
+    setAlocacaoSelecionada(index);
+    setTelaAtual("quadro-entregas");
+  };
+
+  const voltarParaLista = () => {
+    setTelaAtual("lista");
+    setProjetoSelecionado(null);
+  };
+
+  const alternarTarefa = (tarefaIndex) => {
+    setAlocacoes((atual) =>
+      atual.map((aloc, i) => {
+        if (i !== alocacaoSelecionada) return aloc;
+
+        return {
+          ...aloc,
+          checklist: aloc.checklist.map((tarefa, t) =>
+            t === tarefaIndex
+              ? {
+                  ...tarefa,
+                  status:
+                    tarefa.status === "Completo" ? "Pendente" : "Completo",
+                }
+              : tarefa
+          ),
+        };
+      })
+    );
+  };
+
+  const adicionarTarefa = () => {
+    const texto = novaTarefa.trim();
+
+    if (!texto) {
+      return;
+    }
+
+    setAlocacoes((atual) =>
+      atual.map((aloc, i) => {
+        if (i !== alocacaoSelecionada) return aloc;
+
+        return {
+          ...aloc,
+          checklist: [
+            ...aloc.checklist,
+            { item: texto, desc: "Tarefa adicionada por você.", status: "Pendente" },
+          ],
+        };
+      })
+    );
+
+    setNovaTarefa("");
+  };
+
+  const projetoAtual =
+    projetoSelecionado !== null ? projetosGerais[projetoSelecionado] : null;
+  const alocacaoAtual = alocacoes[alocacaoSelecionada];
 
   return (
     <div className="layout-principal">
@@ -77,8 +181,21 @@ const DashboardDev = ({ onLogout }) => {
         <div className="logo-mega">MEGA JR.</div>
 
         <nav className="nav-botoes">
-          <button className="btn-sidebar ativo">Projetos</button>
-          <button className="btn-sidebar">Minhas alocações</button>
+          <button
+            className={`btn-sidebar ${abaAtiva === "projetos" ? "ativo" : ""}`}
+            onClick={() => trocarAba("projetos")}
+          >
+            Projetos
+          </button>
+
+          <button
+            className={`btn-sidebar ${
+              abaAtiva === "alocacoes" ? "ativo" : ""
+            }`}
+            onClick={() => trocarAba("alocacoes")}
+          >
+            Minhas alocações
+          </button>
         </nav>
 
         <button className="btn-sair" onClick={handleLogout}>
@@ -121,7 +238,9 @@ const DashboardDev = ({ onLogout }) => {
 
             <input
               type="text"
-              placeholder="Buscar projetos"
+              placeholder={
+                abaAtiva === "projetos" ? "Buscar projetos" : "Buscar alocações"
+              }
               className="input-busca"
             />
           </div>
@@ -131,22 +250,27 @@ const DashboardDev = ({ onLogout }) => {
 
             <div className="info-usuario">
               <span className="nome-usuario">Fabio Akita</span>
-              <span className="cargo-usuario">Desenvolvedor</span>
+              <span className="cargo-usuario">Membro</span>
             </div>
           </div>
         </header>
 
         <div className="area-telas">
-          {telaAtual === "dashboard" ? (
+          {/* ABA PROJETOS - lista somente leitura */}
+          {abaAtiva === "projetos" && telaAtual === "lista" && (
             <div className="tela-dashboard">
-              <h2>Dashboard-Projetos</h2>
+              <h2>Projetos</h2>
+
+              <p className="subtitulo">
+                Todos os projetos cadastrados (somente leitura).
+              </p>
 
               <div className="grid-projetos">
-                {projetos.map((proj, i) => (
+                {projetosGerais.map((proj, i) => (
                   <div key={i} className="card-projeto">
                     <div className="bolinha-status"></div>
 
-                    <h3>{proj.titulo}</h3>
+                    <h3>{proj.projeto}</h3>
 
                     <div className="tags">
                       <span className="tag laranja">{proj.cliente}</span>
@@ -158,73 +282,164 @@ const DashboardDev = ({ onLogout }) => {
 
                     <button
                       className="btn-detalhes"
-                      onClick={() => setTelaAtual("detalhes")}
+                      onClick={() => abrirDetalhesProjeto(i)}
                     >
                       Ver detalhes
                     </button>
                   </div>
                 ))}
               </div>
+            </div>
+          )}
 
+          {/* ABA PROJETOS - detalhes somente leitura */}
+          {abaAtiva === "projetos" &&
+            telaAtual === "detalhes-projeto" &&
+            projetoAtual && (
+              <div className="tela-detalhes">
+                <div className="cabecalho-detalhes">
+                  <div>
+                    <h2>Detalhes do projeto</h2>
+
+                    <p className="subtitulo">Informações gerais (somente leitura).</p>
+                  </div>
+
+                  <button className="btn-voltar" onClick={voltarParaLista}>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#df8a43"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m12 19-7-7 7-7" />
+                      <path d="M19 12H5" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="card-resumo">
+                  <div className="info-principal-resumo">
+                    <div className="icone-globo">
+                      <svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                        <path d="M2 12h20" />
+                      </svg>
+                    </div>
+
+                    <div>
+                      <h3>{projetoAtual.projeto}</h3>
+
+                      <div className="tags">
+                        <span className="tag laranja">{projetoAtual.cliente}</span>
+                        <span className="tag cinza">{projetoAtual.tipo}</span>
+                      </div>
+
+                      <p className="descricao-resumo">{projetoAtual.descricao}</p>
+                    </div>
+                  </div>
+
+                  <div className="dados-resumo">
+                    <div className="coluna-dado">
+                      <span className="label-dado">Início</span>
+                      <span className="valor-dado">{projetoAtual.inicio}</span>
+                    </div>
+
+                    <div className="coluna-dado">
+                      <span className="label-dado">Prazo</span>
+                      <span className="valor-dado">{projetoAtual.prazo}</span>
+                    </div>
+
+                    <div className="coluna-dado">
+                      <span className="label-dado">Status atual</span>
+                      <span className="valor-dado status-andamento">
+                        {projetoAtual.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card-checklist">
+                  <h3>Membros envolvidos</h3>
+
+                  <div className="lista-checklist">
+                    {projetoAtual.membros.map((membro, i) => (
+                      <div key={i} className="item-checklist">
+                        <div className="bolinha-verde"></div>
+
+                        <div className="textos-checklist">
+                          <strong>{membro}</strong>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {/* ABA MINHAS ALOCAÇÕES - lista */}
+          {abaAtiva === "alocacoes" && telaAtual === "lista" && (
+            <div className="tela-dashboard">
               <h2>Minhas Alocações</h2>
 
               <p className="subtitulo">
-                Projetos que você já pegou para desenvolver.
+                Projetos em que você está alocado atualmente.
               </p>
 
-              <table className="tabela-alocacoes">
-                <thead>
-                  <tr>
-                    <th>Projeto</th>
-                    <th>Função</th>
-                    <th>Peguei em</th>
-                    <th>Prazo</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
+              <div className="grid-projetos">
+                {alocacoes.map((aloc, i) => (
+                  <div key={i} className="card-projeto">
+                    <div className="bolinha-status"></div>
 
-                <tbody>
-                  {alocacoes.map((aloc, i) => (
-                    <tr key={i}>
-                      <td>
-                        <strong>{aloc.projeto}</strong>
-                        <br />
-                        <span className="cliente-tabela">{aloc.cliente}</span>
-                      </td>
+                    <h3>{aloc.projeto}</h3>
 
-                      <td>{aloc.funcao}</td>
-                      <td>{aloc.data}</td>
-                      <td>{aloc.prazo}</td>
+                    <div className="tags">
+                      <span className="tag laranja">{aloc.cliente}</span>
+                      <span className="tag cinza">{aloc.funcao}</span>
+                    </div>
 
-                      <td
-                        className={
-                          aloc.status === "Concluído"
-                            ? "texto-branco"
-                            : "texto-laranja"
-                        }
-                      >
-                        {aloc.status}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                    <p className="prazo">Prazo: {aloc.prazo}</p>
+
+                    <p className="descricao">Status: {aloc.status}</p>
+
+                    <button
+                      className="btn-detalhes"
+                      onClick={() => abrirQuadroEntregas(i)}
+                    >
+                      Abrir quadro de entregas
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-          ) : (
+          )}
+
+          {/* ABA MINHAS ALOCAÇÕES - quadro de entregas */}
+          {abaAtiva === "alocacoes" && telaAtual === "quadro-entregas" && (
             <div className="tela-detalhes">
               <div className="cabecalho-detalhes">
                 <div>
-                  <h2>Finalizar Projeto</h2>
+                  <h2>Quadro de entregas</h2>
 
                   <p className="subtitulo">
-                    Projetos que você já pegou para desenvolver.
+                    Acompanhamento pessoal da sua entrega neste projeto.
                   </p>
                 </div>
 
-                <button
-                  className="btn-voltar"
-                  onClick={() => setTelaAtual("dashboard")}
-                >
+                <button className="btn-voltar" onClick={voltarParaLista}>
                   <svg
                     width="24"
                     height="24"
@@ -261,67 +476,68 @@ const DashboardDev = ({ onLogout }) => {
                   </div>
 
                   <div>
-                    <h3>Painel Administrativo</h3>
+                    <h3>{alocacaoAtual.projeto}</h3>
 
                     <div className="tags">
-                      <span className="tag laranja">Facebook</span>
-                      <span className="tag cinza">Full Stack</span>
+                      <span className="tag laranja">{alocacaoAtual.cliente}</span>
+                      <span className="tag cinza">{alocacaoAtual.funcao}</span>
                     </div>
 
-                    <p className="descricao-resumo">
-                      Desenvolvimento de nova plataforma web institucional.
-                    </p>
+                    <p className="descricao-resumo">{alocacaoAtual.descricao}</p>
                   </div>
                 </div>
 
                 <div className="dados-resumo">
                   <div className="coluna-dado">
                     <span className="label-dado">Pegue em</span>
-                    <span className="valor-dado">09/3/2025</span>
+                    <span className="valor-dado">{alocacaoAtual.data}</span>
                   </div>
 
                   <div className="coluna-dado">
                     <span className="label-dado">Prazo</span>
-                    <span className="valor-dado">12/7/2025</span>
+                    <span className="valor-dado">{alocacaoAtual.prazo}</span>
                   </div>
 
                   <div className="coluna-dado">
                     <span className="label-dado">Status atual</span>
                     <span className="valor-dado status-andamento">
-                      Em andamento
+                      {alocacaoAtual.status}
                     </span>
-                  </div>
-
-                  <div className="coluna-porcentagem">
-                    <span className="porcentagem">
-                      67<span className="simbolo-porcento">%</span>
-                    </span>
-
-                    <span className="label-dado">Processo geral</span>
                   </div>
                 </div>
               </div>
 
               <div className="grid-inferior">
                 <div className="card-checklist">
-                  <h3>Checklist de entrega</h3>
+                  <h3>Minhas tarefas de entrega</h3>
 
                   <p className="subtitulo">
-                    Verifique se todos os itens foram concluídos.
+                    Clique em uma tarefa para marcar como concluída ou pendente.
                   </p>
 
                   <div className="lista-checklist">
-                    {checklist.map((item, i) => (
-                      <div key={i} className="item-checklist">
-                        <div className={`bolinha-${item.cor}`}></div>
+                    {alocacaoAtual.checklist.map((tarefa, i) => (
+                      <div
+                        key={i}
+                        className="item-checklist"
+                        onClick={() => alternarTarefa(i)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <div
+                          className={`bolinha-${
+                            tarefa.status === "Completo" ? "verde" : "amarelo"
+                          }`}
+                        ></div>
 
                         <div className="textos-checklist">
-                          <strong>{item.item}</strong>
-                          <p>{item.desc}</p>
+                          <strong>{tarefa.item}</strong>
+                          <p>{tarefa.desc}</p>
                         </div>
 
-                        <span className={`badge-${item.status.toLowerCase()}`}>
-                          {item.status}
+                        <span
+                          className={`badge-${tarefa.status.toLowerCase()}`}
+                        >
+                          {tarefa.status}
                         </span>
                       </div>
                     ))}
@@ -344,18 +560,39 @@ const DashboardDev = ({ onLogout }) => {
                     </svg>
 
                     <span>
-                      Após enviar, o projeto será avaliado pelo gerente
-                      responsável.
+                      As tarefas marcadas aqui são apenas um acompanhamento
+                      local da sua entrega.
                     </span>
                   </div>
                 </div>
 
                 <div className="card-descricao">
-                  <h3>Descrição do projeto</h3>
+                  <h3>Adicionar tarefa</h3>
 
-                  <textarea placeholder="Escrever um descrição do projeto..."></textarea>
+                  <p className="subtitulo">
+                    Inclua uma nova tarefa de acompanhamento para esta alocação.
+                  </p>
 
-                  <button className="btn-enviar">Enviar</button>
+                  <input
+                    type="text"
+                    placeholder="Descreva a tarefa..."
+                    value={novaTarefa}
+                    onChange={(e) => setNovaTarefa(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: "1px solid #444",
+                      background: "#1f1f1f",
+                      color: "white",
+                      marginBottom: "12px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+
+                  <button className="btn-enviar" onClick={adicionarTarefa}>
+                    Adicionar tarefa
+                  </button>
                 </div>
               </div>
             </div>
