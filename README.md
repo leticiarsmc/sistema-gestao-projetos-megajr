@@ -95,6 +95,18 @@ Usuário com perfil DIRECTOR → acessa Dashboard do Diretor
 
 ---
 
+## Perfis de acesso para teste
+
+Use os seguintes usuários criados pela seed para testar o sistema:
+
+| Perfil | Usuário | Senha |
+|---|---|---|
+| Admin | `admin@megajr.com` | `123456` |
+| Diretor | `diretor@megajr.com` | `123456` |
+| Membro | `pedroh@megajr.com` | `123456` |
+
+> Os usuários acima são contas de demonstração criadas pela seed do MVP.
+
 ## Tecnologias utilizadas
 
 ### Front-end
